@@ -3,15 +3,13 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import sys
 from pathlib import Path
 
 from bs4 import BeautifulSoup
-from pypdf import PdfReader
-
-sys.path.append(str(Path(__file__).resolve().parents[1] / "src"))
-
-from rag_system.retrieval import DocumentChunk
+try:
+    from pypdf import PdfReader
+except ImportError:  # pragma: no cover
+    PdfReader = None
 
 
 def clean_text(text: str) -> str:
@@ -28,6 +26,8 @@ def read_document(path: Path) -> str:
             tag.decompose()
         return soup.get_text(" ")
     if suffix == ".pdf":
+        if PdfReader is None:
+            return ""
         reader = PdfReader(str(path))
         return "\n".join(page.extract_text() or "" for page in reader.pages)
     return ""
@@ -57,17 +57,17 @@ def main() -> None:
     output = Path(args.out)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    records: list[DocumentChunk] = []
+    records: list[dict[str, str]] = []
     for path in sorted(raw_dir.rglob("*")):
         if not path.is_file() or path.name == ".gitkeep":
             continue
         text = read_document(path)
         for idx, chunk in enumerate(chunk_text(text)):
-            records.append(DocumentChunk(f"{path.stem}-{idx}", str(path), chunk))
+            records.append({"doc_id": f"{path.stem}-{idx}", "source": str(path), "text": chunk})
 
     with output.open("w", encoding="utf-8") as file:
         for record in records:
-            file.write(json.dumps(record.__dict__, ensure_ascii=False) + "\n")
+            file.write(json.dumps(record, ensure_ascii=False) + "\n")
 
     print(f"Wrote {len(records)} chunks to {output}")
 

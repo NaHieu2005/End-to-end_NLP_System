@@ -5,8 +5,16 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
+
+from rag_system.model_cache import configure_hf_cache
+
+HF_CACHE_DIR = configure_hf_cache()
+
+from sentence_transformers import CrossEncoder, SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+
+DEFAULT_EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+DEFAULT_RERANKER_MODEL = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
 
 
 @dataclass
@@ -49,9 +57,32 @@ class Retriever:
         return [(self.chunks[idx], float(scores[idx])) for idx in top_indices]
 
 
+class Reranker:
+    def __init__(self, model_name: str = DEFAULT_RERANKER_MODEL):
+        self.model_name = model_name
+        self.model = CrossEncoder(model_name)
+
+    def rerank(
+        self,
+        question: str,
+        candidates: list[tuple[DocumentChunk, float]],
+        top_k: int,
+    ) -> list[tuple[DocumentChunk, float]]:
+        if not candidates:
+            return []
+        pairs = [(question, chunk.text) for chunk, _score in candidates]
+        scores = self.model.predict(pairs)
+        ranked = sorted(
+            ((chunk, float(score)) for (chunk, _old_score), score in zip(candidates, scores)),
+            key=lambda item: item[1],
+            reverse=True,
+        )
+        return ranked[:top_k]
+
+
 def build_retriever(
     chunks: list[DocumentChunk],
-    model_name: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    model_name: str = DEFAULT_EMBEDDING_MODEL,
 ) -> Retriever:
     model = SentenceTransformer(model_name)
     texts = [chunk.text for chunk in chunks]

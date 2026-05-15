@@ -50,12 +50,15 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-The implementation uses open-source Hugging Face accessible models:
+The default implementation uses open-source Hugging Face accessible models:
 
-- embedding: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
-- extractive QA reader: `deepset/xlm-roberta-base-squad2`
+- embedding: `sentence-transformers/paraphrase-multilingual-mpnet-base-v2`
+- reranker: `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`
+- extractive Vietnamese QA reader: `letrunglinh/qa_pnc`
 
 You can change these with command-line flags.
+
+Model files are cached under `.hf_cache/` in this project directory on drive F, not under the default user cache on drive C.
 
 ## Prepare Data
 
@@ -82,6 +85,16 @@ python scripts/run_rag.py ^
 ```
 
 Each output line contains one concise answer for the corresponding input question.
+
+If your machine runs out of memory, disable reranking:
+
+```bash
+python scripts/run_rag.py ^
+  --questions data/test/questions.txt ^
+  --index data/processed/index.pkl ^
+  --out system_outputs/system_output_1.txt ^
+  --no-reranker
+```
 
 ## Evaluate
 

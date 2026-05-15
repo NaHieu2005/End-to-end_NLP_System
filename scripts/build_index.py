@@ -7,14 +7,14 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1] / "src"))
 
-from rag_system.retrieval import DocumentChunk, build_retriever
+from rag_system.retrieval import DEFAULT_EMBEDDING_MODEL, DocumentChunk, build_retriever
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--corpus", default="data/processed/corpus.jsonl")
     parser.add_argument("--out", default="data/processed/index.pkl")
-    parser.add_argument("--embedding-model", default="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+    parser.add_argument("--embedding-model", default=DEFAULT_EMBEDDING_MODEL)
     args = parser.parse_args()
 
     chunks: list[DocumentChunk] = []
