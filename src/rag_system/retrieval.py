@@ -29,7 +29,7 @@ class Retriever:
         self.model_name = model_name
         self.chunks = chunks
         self.embeddings = embeddings
-        self.model = SentenceTransformer(model_name)
+        self.model = SentenceTransformer(model_name, cache_folder=str(HF_CACHE_DIR))
 
     @classmethod
     def load(cls, path: str | Path) -> "Retriever":
@@ -60,7 +60,7 @@ class Retriever:
 class Reranker:
     def __init__(self, model_name: str = DEFAULT_RERANKER_MODEL):
         self.model_name = model_name
-        self.model = CrossEncoder(model_name)
+        self.model = CrossEncoder(model_name, model_kwargs={"cache_dir": str(HF_CACHE_DIR)})
 
     def rerank(
         self,
@@ -84,7 +84,7 @@ def build_retriever(
     chunks: list[DocumentChunk],
     model_name: str = DEFAULT_EMBEDDING_MODEL,
 ) -> Retriever:
-    model = SentenceTransformer(model_name)
+    model = SentenceTransformer(model_name, cache_folder=str(HF_CACHE_DIR))
     texts = [chunk.text for chunk in chunks]
     embeddings = model.encode(texts, normalize_embeddings=True)
     return Retriever(model_name, chunks, np.asarray(embeddings))

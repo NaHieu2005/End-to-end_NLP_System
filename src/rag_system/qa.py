@@ -28,6 +28,8 @@ class ExtractiveRAG:
             "question-answering",
             model=qa_model,
             tokenizer=qa_model,
+            model_kwargs={"cache_dir": str(HF_CACHE_DIR)},
+            tokenizer_kwargs={"cache_dir": str(HF_CACHE_DIR)},
         )
 
     def answer(self, question: str) -> str:
