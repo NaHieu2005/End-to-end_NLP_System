@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+models/
+*.faiss
+*.pkl
+
+.env
+.DS_Store
+Thumbs.db
+
+ASSIGNMENT 2 End-to-end-NLP-System-Building update.pdf
+ASSIGNMENT 2 End-to-end-NLP-System-Building update.txt
