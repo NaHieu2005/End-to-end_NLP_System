@@ -110,6 +110,28 @@ Metrics reported:
 - token F1
 - answer recall
 
+## Fine-tuning on Kaggle
+
+The repo includes a separate extractive QA fine-tuning dataset built from public Vietnamese news articles:
+
+- dataset folder: `data/news_finetune/`
+- upload zip: `data/news_finetune.zip`
+- Kaggle training code: `kaggle/train_qa.py`
+- Kaggle instructions: `kaggle/README.md`
+
+Dataset summary:
+
+- 90 public news articles
+- 50,000-word long corpus
+- 535 SQuAD-style QA examples
+- train/validation/test split: 374 / 80 / 81
+
+Generate the dataset again:
+
+```bash
+python scripts/prepare_news_finetune_data.py --out-dir data/news_finetune --max-articles 90 --target-words 50000
+```
+
 ## Submission Checklist
 
 - `report.pdf` or report source in `reports/`

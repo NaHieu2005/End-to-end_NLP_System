@@ -1,0 +1,14 @@
+{
+  "source": "VnExpress public RSS/article pages",
+  "feeds": {
+    "giao_duc": "https://vnexpress.net/rss/giao-duc.rss",
+    "khoa_hoc": "https://vnexpress.net/rss/khoa-hoc.rss",
+    "so_hoa": "https://vnexpress.net/rss/so-hoa.rss"
+  },
+  "articles": 90,
+  "corpus_words": 50000,
+  "qa_examples": 535,
+  "train_examples": 374,
+  "valid_examples": 80,
+  "test_examples": 81
+}

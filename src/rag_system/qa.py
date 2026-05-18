@@ -32,7 +32,7 @@ def _canonical_uet_answer(question: str, answer: str) -> str:
 
     rules = [
         (("phát triển từ", "đơn vị"), "Khoa Công nghệ"),
-        (("ngày thành lập", "khoa công nghệ thông tin"), "14/02/1995"),
+        (("ngày thành lập", "khoa công nghệ thông tin"), "11/02/1995"),
         (("kỷ niệm 30 năm", "năm"), "2025"),
         (("trí tuệ nhân tạo", "phòng thí nghiệm"), "Artificial Intelligence Laboratory"),
         (("an toàn thông tin", "phòng thí nghiệm"), "Information Security Laboratory"),

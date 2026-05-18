@@ -1,5 +1,5 @@
 Khoa Công nghệ;Faculty of Technology
-14/02/1995;14 tháng 02 năm 1995
+11/02/1995;11 tháng 02 năm 1995
 2025
 Phòng thí nghiệm Trí tuệ nhân tạo;Artificial Intelligence Laboratory
 Phòng thí nghiệm An toàn thông tin;Information Security Laboratory
