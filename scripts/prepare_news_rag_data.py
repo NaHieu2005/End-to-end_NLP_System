@@ -25,7 +25,7 @@ def fetch(url: str, timeout: int = 30) -> bytes:
     request = Request(
         url,
         headers={
-            "User-Agent": "Mozilla/5.0 news-finetune-dataset-builder/1.0",
+            "User-Agent": "Mozilla/5.0 news-rag-dataset-builder/1.0",
             "Accept": "text/html,application/rss+xml,application/xml;q=0.9,*/*;q=0.5",
         },
     )
@@ -167,43 +167,12 @@ def make_qa(article: dict[str, str], index: int) -> list[dict]:
     return qas
 
 
-def to_squad(records: list[dict], title: str) -> dict:
-    return {
-        "version": "news-squad-1.0",
-        "data": [
-            {
-                "title": title,
-                "paragraphs": [
-                    {
-                        "context": record["context"],
-                        "qas": [
-                            {
-                                "id": record["id"],
-                                "question": record["question"],
-                                "answers": [
-                                    {
-                                        "text": record["answers"]["text"][0],
-                                        "answer_start": record["answers"]["answer_start"][0],
-                                    }
-                                ],
-                                "is_impossible": False,
-                            }
-                        ],
-                    }
-                    for record in records
-                ],
-            }
-        ],
-    }
-
-
-def split_records(records: list[dict], seed: int) -> tuple[list[dict], list[dict], list[dict]]:
+def split_records(records: list[dict], seed: int, train_ratio: float) -> tuple[list[dict], list[dict]]:
     rng = random.Random(seed)
     shuffled = records[:]
     rng.shuffle(shuffled)
-    train_end = int(len(shuffled) * 0.7)
-    valid_end = int(len(shuffled) * 0.85)
-    return shuffled[:train_end], shuffled[train_end:valid_end], shuffled[valid_end:]
+    train_end = int(len(shuffled) * train_ratio)
+    return shuffled[:train_end], shuffled[train_end:]
 
 
 def write_json(path: Path, payload) -> None:
@@ -211,19 +180,32 @@ def write_json(path: Path, payload) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def write_qa_split(out_dir: Path, records: list[dict]) -> None:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    questions = [record["question"] for record in records]
+    answers = [record["answers"]["text"][0] for record in records]
+    (out_dir / "questions.txt").write_text("\n".join(questions) + "\n", encoding="utf-8")
+    (out_dir / "reference_answers.txt").write_text("\n".join(answers) + "\n", encoding="utf-8")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out-dir", default="data/news_finetune")
+    parser.add_argument("--raw-dir", default="data/raw/news")
+    parser.add_argument("--metadata-dir", default="data/news")
+    parser.add_argument("--train-dir", default="data/train")
+    parser.add_argument("--test-dir", default="data/test")
     parser.add_argument("--max-articles", type=int, default=90)
     parser.add_argument("--target-words", type=int, default=50000)
     parser.add_argument("--target-qa", type=int, default=1000)
+    parser.add_argument("--train-ratio", type=float, default=0.85)
     parser.add_argument("--delay", type=float, default=0.2)
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
 
-    out_dir = Path(args.out_dir)
-    raw_dir = out_dir / "raw"
+    raw_dir = Path(args.raw_dir)
+    metadata_dir = Path(args.metadata_dir)
     raw_dir.mkdir(parents=True, exist_ok=True)
+    metadata_dir.mkdir(parents=True, exist_ok=True)
 
     rss_items: list[dict[str, str]] = []
     for feed_name, feed_url in RSS_FEEDS.items():
@@ -247,7 +229,7 @@ def main() -> None:
             break
         time.sleep(args.delay)
 
-    article_jsonl = raw_dir / "articles.jsonl"
+    article_jsonl = metadata_dir / "articles.jsonl"
     article_jsonl.write_text(
         "\n".join(json.dumps(article, ensure_ascii=False) for article in articles) + "\n",
         encoding="utf-8",
@@ -264,7 +246,7 @@ def main() -> None:
         corpus_parts.append(" ".join(words[:remaining]))
         word_count += min(len(words), remaining)
     corpus = "\n\n".join(corpus_parts)
-    (out_dir / "corpus_long.txt").write_text(corpus + "\n", encoding="utf-8")
+    (raw_dir / "corpus_long.txt").write_text(corpus + "\n", encoding="utf-8")
 
     qa_records: list[dict] = []
     for idx, article in enumerate(articles, 1):
@@ -273,13 +255,12 @@ def main() -> None:
         rng = random.Random(args.seed)
         rng.shuffle(qa_records)
         qa_records = qa_records[: args.target_qa]
-    train, valid, test = split_records(qa_records, args.seed)
+    train, test = split_records(qa_records, args.seed, args.train_ratio)
 
-    write_json(out_dir / "qa_squad_train.json", to_squad(train, "Vietnamese news train"))
-    write_json(out_dir / "qa_squad_valid.json", to_squad(valid, "Vietnamese news validation"))
-    write_json(out_dir / "qa_squad_test.json", to_squad(test, "Vietnamese news test"))
+    write_qa_split(Path(args.train_dir), train)
+    write_qa_split(Path(args.test_dir), test)
     write_json(
-        out_dir / "metadata.json",
+        metadata_dir / "metadata.json",
         {
             "source": "VnExpress public RSS/article pages",
             "feeds": RSS_FEEDS,
@@ -287,14 +268,13 @@ def main() -> None:
             "corpus_words": len(corpus.split()),
             "qa_examples": len(qa_records),
             "train_examples": len(train),
-            "valid_examples": len(valid),
             "test_examples": len(test),
         },
     )
 
     print(f"Wrote {len(articles)} articles to {article_jsonl}")
     print(f"Wrote corpus with {len(corpus.split())} words")
-    print(f"Wrote QA splits: train={len(train)}, valid={len(valid)}, test={len(test)}")
+    print(f"Wrote QA splits: train={len(train)}, test={len(test)}")
 
 
 if __name__ == "__main__":

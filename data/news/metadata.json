@@ -1,0 +1,8 @@
+{
+  "source": "VnExpress public RSS/article pages",
+  "articles": 90,
+  "corpus_words": 50000,
+  "qa_examples": 1000,
+  "train_examples": 850,
+  "test_examples": 150
+}

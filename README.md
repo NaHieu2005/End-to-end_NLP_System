@@ -75,6 +75,22 @@ python scripts/build_corpus.py --raw-dir data/raw --out data/processed/corpus.js
 python scripts/build_index.py --corpus data/processed/corpus.jsonl --out data/processed/index.pkl
 ```
 
+The current news dataset is stored in the original assignment format:
+
+- source corpus: `data/raw/news/corpus_long.txt`
+- train questions: `data/train/questions.txt`
+- train references: `data/train/reference_answers.txt`
+- test questions: `data/test/questions.txt`
+- test references: `data/test/reference_answers.txt`
+- split: 850 train / 150 test
+
+To use only the news corpus when rebuilding the index:
+
+```bash
+python scripts/build_corpus.py --raw-dir data/raw/news --out data/processed/corpus.jsonl
+python scripts/build_index.py --corpus data/processed/corpus.jsonl --out data/processed/index.pkl
+```
+
 ## Run RAG
 
 ```bash
@@ -130,26 +146,12 @@ Metrics reported:
 - token F1
 - answer recall
 
-## Fine-tuning on Kaggle
+## Regenerate News Data
 
-The repo includes a separate extractive QA fine-tuning dataset built from public Vietnamese news articles:
-
-- dataset folder: `data/news_finetune/`
-- upload zip: `data/news_finetune.zip`
-- Kaggle training code: `kaggle/train_qa.py`
-- Kaggle instructions: `kaggle/README.md`
-
-Dataset summary:
-
-- 90 public news articles
-- 50,000-word long corpus
-- 1,000 SQuAD-style QA examples
-- train/validation/test split: 700 / 150 / 150
-
-Generate the dataset again:
+Generate the news corpus and the train/test QA files again:
 
 ```bash
-python scripts/prepare_news_finetune_data.py --out-dir data/news_finetune --max-articles 90 --target-words 50000 --target-qa 1000
+python scripts/prepare_news_rag_data.py --max-articles 90 --target-words 50000 --target-qa 1000
 ```
 
 ## Submission Checklist

@@ -1,40 +1,150 @@
-Trường Đại học Công nghệ phát triển từ đơn vị nào?
-Ngày thành lập Khoa Công nghệ Thông tin được kỷ niệm 30 năm là ngày nào?
-Khoa Công nghệ Thông tin kỷ niệm 30 năm thành lập vào năm nào?
-Khoa Công nghệ Thông tin của UET có phòng thí nghiệm mục tiêu nào về trí tuệ nhân tạo?
-Phòng thí nghiệm nào của FIT liên quan đến an toàn thông tin?
-Khoa Công nghệ Thông tin có bộ môn nào về khoa học máy tính?
-Khoa Công nghệ Thông tin có bộ môn nào về công nghệ phần mềm?
-Khoa Công nghệ Thông tin có bộ môn nào về mạng và truyền thông máy tính?
-UET tuyển sinh đại học chính quy năm 2026 theo mã trường nào?
-Thông tin tuyển sinh đại học chính quy năm 2026 được ban hành theo quyết định số nào?
-Năm 2026 UET có chính sách gì với sinh viên năm thứ nhất về địa điểm học?
-Chương trình học bổng thạc sĩ toàn phần V-STT hướng tới đào tạo nguồn nhân lực lĩnh vực nào?
-Tuyển sinh bậc Thạc sĩ năm 2026 của UET có mấy đợt?
-Tuyển sinh bậc Tiến sĩ năm 2026 của UET có mấy đợt?
-Tên chương trình học bổng thạc sĩ tại Korea do quỹ nào tài trợ?
-Quỹ Pony Chung tài trợ học bổng tại trường đại học nào?
-Hội nghị đào tạo UET 2026 có chủ đề gì?
-Hội nghị đào tạo UET 2026 được tổ chức tại đâu?
-Ngày 11/05/2026 UET ký hợp tác nghiên cứu với công ty nào?
-UET và IMRA hợp tác nghiên cứu phát triển loại pin mặt trời nào?
-Nhóm nghiên cứu HanoiAir phát triển hệ thống dự báo gì?
-HanoiAir được giới thiệu là hệ thống đầu tiên tại quốc gia nào?
-Nghiên cứu AI chẩn đoán ung thư phổi là hợp tác giữa UET và bệnh viện nào?
-Nhà khoa học Việt ở UET phát triển công nghệ sàng lọc trẻ mắc chứng gì?
-Đề tài VR-BCI đạt giải Nhì do giảng viên khoa nào hướng dẫn?
-Thiết bị nào được dùng để thu nhận tín hiệu điện não trong hệ thống VR-BCI?
-Hệ thống VR-BCI thử nghiệm trên bao nhiêu bệnh nhân đột quỵ mức độ nhẹ?
-Nhóm sinh viên nào thực hiện đề tài A VR-BCI System to Support Rehabilitation for Stroke Patients?
-Seminar Hội Toán học Hà Nội tại UET diễn ra ngày nào?
-Hội thảo quốc tế bán dẫn Hà Lan - Việt Nam có tên tiếng Anh là gì?
-Ngày hội việc làm UET năm 2026 diễn ra trong tháng nào?
-Trang chủ UET nêu tỷ lệ tiến sĩ trên giảng viên, nghiên cứu viên là bao nhiêu?
-Trang chủ UET nêu trường có bao nhiêu sinh viên theo học?
-Địa chỉ email liên hệ chung của UET là gì?
-Website UET liên kết tới cổng Đại học Quốc gia Hà Nội ở địa chỉ nào?
-Phòng Khoa học công nghệ và Hợp tác phát triển có chức năng tham mưu cho ai?
-Phòng Hành chính Quản trị và Tổ chức cán bộ quản lý kênh truyền thông chính thức nào?
-Bộ phận Tổ chức Cán bộ của Phòng Hành chính Quản trị và Tổ chức cán bộ đặt tại phòng nào?
-Điện thoại Bộ phận Hành chính Quản trị là số nào?
-Trường Đại học Công nghệ có bao nhiêu cán bộ hành chính, kỹ thuật?
+Chuyên mục của bài báo số 43 là gì?
+Câu cuối cùng trong nội dung bài báo số 68 là gì?
+Bài báo số 88 được đăng ngày nào?
+Câu thứ ba trong nội dung bài báo số 33 là gì?
+Tiêu đề của bài báo số 20 là gì?
+Tóm tắt của bài báo số 1 là gì?
+Bài báo số 22 nằm trên tên miền nào?
+Câu thứ ba trong nội dung bài báo số 25 là gì?
+Tiêu đề của bài báo số 81 là gì?
+Câu cuối cùng trong nội dung bài báo số 1 là gì?
+Câu đầu tiên trong nội dung bài báo số 31 là gì?
+URL của bài báo số 68 là gì?
+Nguồn của bài báo số 58 là gì?
+Câu thứ ba trong nội dung bài báo số 2 là gì?
+Bài báo số 23 nằm trên tên miền nào?
+Câu thứ ba trong nội dung bài báo số 64 là gì?
+Câu thứ hai trong nội dung bài báo số 77 là gì?
+Nguồn của bài báo số 54 là gì?
+Câu thứ hai trong nội dung bài báo số 79 là gì?
+Câu thứ hai trong nội dung bài báo số 34 là gì?
+Câu cuối cùng trong nội dung bài báo số 53 là gì?
+Bài báo số 68 được đăng trên nguồn nào?
+Chuyên mục của bài báo số 44 là gì?
+Câu thứ ba trong nội dung bài báo số 62 là gì?
+Bài báo số 28 thuộc chuyên mục nào?
+Nguồn của bài báo số 33 là gì?
+Bài báo số 45 được đăng ngày nào?
+URL của bài báo số 79 là gì?
+12 từ đầu tiên trong nội dung bài báo số 56 là gì?
+Câu thứ hai trong nội dung bài báo số 73 là gì?
+Bài báo số 35 được tóm tắt như thế nào?
+Chuyên mục của bài báo số 10 là gì?
+Tóm tắt của bài báo số 60 là gì?
+Bài báo số 42 nằm trên tên miền nào?
+URL của bài báo số 1 là gì?
+Tóm tắt của bài báo số 81 là gì?
+URL của bài báo số 57 là gì?
+Câu thứ ba trong nội dung bài báo số 80 là gì?
+Bài báo số 40 nằm trên tên miền nào?
+Tiêu đề của bài báo số 65 là gì?
+Bài báo số 36 được đăng trên nguồn nào?
+Câu cuối cùng trong nội dung bài báo số 29 là gì?
+Chuyên mục của bài báo số 42 là gì?
+Bài báo số 51 nằm trên tên miền nào?
+Tiêu đề của bài báo số 18 là gì?
+Bài báo số 11 thuộc chuyên mục nào?
+Bài báo số 22 được đăng trên nguồn nào?
+Câu đầu tiên trong nội dung bài báo số 1 là gì?
+Tóm tắt của bài báo số 50 là gì?
+Bài báo số 83 được đăng trên nguồn nào?
+Bài báo số 85 thuộc chuyên mục nào?
+Bài báo số 5 được đăng ngày nào?
+Tiêu đề của bài báo số 43 là gì?
+URL của bài báo số 73 là gì?
+Câu mở đầu phần nội dung của bài báo số 69 là gì?
+Nguồn của bài báo số 59 là gì?
+Câu mở đầu phần nội dung của bài báo số 15 là gì?
+Tóm tắt của bài báo số 55 là gì?
+URL của bài báo số 18 là gì?
+Nguồn của bài báo số 61 là gì?
+URL của bài báo số 52 là gì?
+Tóm tắt của bài báo số 10 là gì?
+Bài báo số 4 được đăng ngày nào?
+Tiêu đề của bài báo số 63 là gì?
+Câu mở đầu phần nội dung của bài báo số 11 là gì?
+Tóm tắt của bài báo số 83 là gì?
+Ngày đăng của bài báo số 44 là gì?
+Chuyên mục của bài báo số 23 là gì?
+Câu thứ ba trong nội dung bài báo số 53 là gì?
+Câu đầu tiên trong nội dung bài báo số 45 là gì?
+Bài báo số 89 nằm trên tên miền nào?
+Bài báo số 70 được đăng trên nguồn nào?
+Câu đầu tiên trong nội dung bài báo số 27 là gì?
+Tóm tắt của bài báo số 30 là gì?
+Bài báo số 85 được tóm tắt như thế nào?
+URL của bài báo số 59 là gì?
+Chuyên mục của bài báo số 77 là gì?
+Câu thứ ba trong nội dung bài báo số 65 là gì?
+Bài báo số 45 nằm trên tên miền nào?
+Tiêu đề của bài báo số 27 là gì?
+12 từ đầu tiên trong nội dung bài báo số 26 là gì?
+Câu cuối cùng trong nội dung bài báo số 46 là gì?
+Bài báo số 49 được đăng ngày nào?
+Bài báo số 53 được đăng ngày nào?
+URL của bài báo số 30 là gì?
+12 từ đầu tiên trong nội dung bài báo số 69 là gì?
+Câu thứ ba trong nội dung bài báo số 36 là gì?
+Câu thứ ba trong nội dung bài báo số 82 là gì?
+Tiêu đề của bài báo số 77 là gì?
+Tóm tắt của bài báo số 22 là gì?
+URL của bài báo số 77 là gì?
+Bài báo số 23 được đăng trên nguồn nào?
+Bài báo số 90 được tóm tắt như thế nào?
+Bài báo số 73 được đăng trên nguồn nào?
+Tóm tắt của bài báo số 72 là gì?
+Câu mở đầu phần nội dung của bài báo số 18 là gì?
+Chuyên mục của bài báo số 51 là gì?
+Câu thứ ba trong nội dung bài báo số 73 là gì?
+Nguồn của bài báo số 45 là gì?
+Câu cuối cùng trong nội dung bài báo số 6 là gì?
+Bài báo số 18 được tóm tắt như thế nào?
+Câu thứ ba trong nội dung bài báo số 42 là gì?
+Nguồn của bài báo số 30 là gì?
+Nguồn của bài báo số 38 là gì?
+Câu thứ hai trong nội dung bài báo số 44 là gì?
+Nguồn của bài báo số 53 là gì?
+Tóm tắt của bài báo số 57 là gì?
+Bài báo số 53 thuộc chuyên mục nào?
+Câu thứ hai trong nội dung bài báo số 18 là gì?
+Bài báo số 76 được đăng trên nguồn nào?
+Tóm tắt của bài báo số 54 là gì?
+Bài báo số 66 nằm trên tên miền nào?
+Tóm tắt của bài báo số 48 là gì?
+Bài báo số 53 nằm trên tên miền nào?
+Bài báo số 86 nằm trên tên miền nào?
+Tiêu đề của bài báo số 31 là gì?
+Câu cuối cùng trong nội dung bài báo số 15 là gì?
+Câu thứ hai trong nội dung bài báo số 57 là gì?
+12 từ đầu tiên trong nội dung bài báo số 48 là gì?
+Bài báo số 31 thuộc chuyên mục nào?
+Câu thứ hai trong nội dung bài báo số 64 là gì?
+Nguồn của bài báo số 27 là gì?
+Bài báo số 71 được tóm tắt như thế nào?
+12 từ đầu tiên trong nội dung bài báo số 23 là gì?
+Câu mở đầu phần nội dung của bài báo số 21 là gì?
+Câu cuối cùng trong nội dung bài báo số 54 là gì?
+Câu cuối cùng trong nội dung bài báo số 76 là gì?
+Tiêu đề của bài báo số 44 là gì?
+Bài báo số 17 được đăng trên nguồn nào?
+Nguồn của bài báo số 66 là gì?
+Tiêu đề của bài báo số 15 là gì?
+Câu thứ hai trong nội dung bài báo số 29 là gì?
+Chuyên mục của bài báo số 47 là gì?
+Bài báo số 63 được tóm tắt như thế nào?
+Bài báo số 64 thuộc chuyên mục nào?
+Bài báo số 41 thuộc chuyên mục nào?
+12 từ đầu tiên trong nội dung bài báo số 78 là gì?
+Bài báo số 11 được tóm tắt như thế nào?
+Ngày đăng của bài báo số 38 là gì?
+Tóm tắt của bài báo số 79 là gì?
+Bài báo số 36 được đăng ngày nào?
+Câu đầu tiên trong nội dung bài báo số 2 là gì?
+Chuyên mục của bài báo số 76 là gì?
+Tiêu đề của bài báo số 30 là gì?
+Bài báo số 54 được đăng trên nguồn nào?
+Bài báo số 57 được tóm tắt như thế nào?
+Câu đầu tiên trong nội dung bài báo số 11 là gì?
+Câu thứ hai trong nội dung bài báo số 7 là gì?
+Câu thứ ba trong nội dung bài báo số 21 là gì?
+Câu thứ hai trong nội dung bài báo số 9 là gì?

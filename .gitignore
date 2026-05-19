@@ -12,6 +12,8 @@ data/raw/*
 !data/raw/.gitkeep
 !data/raw/uet/
 !data/raw/uet/**
+!data/raw/news/
+!data/raw/news/**
 data/processed/*
 !data/processed/.gitkeep
 !data/processed/corpus.jsonl
