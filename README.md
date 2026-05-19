@@ -86,6 +86,26 @@ python scripts/run_rag.py ^
 
 Each output line contains one concise answer for the corresponding input question.
 
+## Ask Interactively
+
+Load the RAG system once, then type questions in the terminal:
+
+```bash
+python scripts/chat_rag.py
+```
+
+Ask one question and exit:
+
+```bash
+python scripts/chat_rag.py --question "UET tuyển sinh đại học chính quy năm 2026 theo mã trường nào?"
+```
+
+Show retrieved sources:
+
+```bash
+python scripts/chat_rag.py --show-sources
+```
+
 If your machine runs out of memory, disable reranking:
 
 ```bash
