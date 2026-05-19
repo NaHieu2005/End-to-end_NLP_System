@@ -14,9 +14,9 @@ Contents:
 Current split:
 
 - Articles: 90
-- QA examples: 535
-- Train: 374
-- Validation: 80
-- Test: 81
+- QA examples: 1000
+- Train: 700
+- Validation: 150
+- Test: 150
 
 Source: public VnExpress RSS feeds and article pages from education, science, and technology categories.

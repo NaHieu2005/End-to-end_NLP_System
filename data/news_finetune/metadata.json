@@ -7,8 +7,8 @@
   },
   "articles": 90,
   "corpus_words": 50000,
-  "qa_examples": 535,
-  "train_examples": 374,
-  "valid_examples": 80,
-  "test_examples": 81
+  "qa_examples": 1000,
+  "train_examples": 700,
+  "valid_examples": 150,
+  "test_examples": 150
 }

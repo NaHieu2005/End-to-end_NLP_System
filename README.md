@@ -143,13 +143,13 @@ Dataset summary:
 
 - 90 public news articles
 - 50,000-word long corpus
-- 535 SQuAD-style QA examples
-- train/validation/test split: 374 / 80 / 81
+- 1,000 SQuAD-style QA examples
+- train/validation/test split: 700 / 150 / 150
 
 Generate the dataset again:
 
 ```bash
-python scripts/prepare_news_finetune_data.py --out-dir data/news_finetune --max-articles 90 --target-words 50000
+python scripts/prepare_news_finetune_data.py --out-dir data/news_finetune --max-articles 90 --target-words 50000 --target-qa 1000
 ```
 
 ## Submission Checklist

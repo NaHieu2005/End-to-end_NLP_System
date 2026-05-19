@@ -79,11 +79,14 @@ def extract_article(item: dict[str, str]) -> dict[str, str] | None:
 
 
 def article_context(article: dict[str, str]) -> str:
+    domain = urlparse(article["url"]).netloc
     return clean_text(
         "\n".join(
             [
                 f"Nguồn: {article['source']}",
                 f"Chuyên mục: {article['feed']}",
+                f"Tên miền: {domain}",
+                f"URL: {article['url']}",
                 f"Ngày đăng: {article['published']}",
                 f"Tiêu đề: {article['title']}",
                 f"Tóm tắt: {article['description']}",
@@ -98,23 +101,57 @@ def first_sentence(text: str) -> str:
     return parts[0].strip() if parts else text.strip()
 
 
+def body_sentences(text: str) -> list[str]:
+    return [
+        sentence.strip()
+        for sentence in re.split(r"(?<=[.!?])\s+", text.strip())
+        if 5 <= len(sentence.split()) <= 80
+    ]
+
+
+def first_words(text: str, count: int) -> str:
+    words = text.split()
+    return " ".join(words[:count]).strip()
+
+
 def make_qa(article: dict[str, str], index: int) -> list[dict]:
     context = article_context(article)
+    domain = urlparse(article["url"]).netloc
+    sentences = body_sentences(article["body"])
     candidates = [
         (f"Bài báo số {index} được đăng trên nguồn nào?", article["source"]),
+        (f"Nguồn của bài báo số {index} là gì?", article["source"]),
         (f"Bài báo số {index} thuộc chuyên mục nào?", article["feed"]),
+        (f"Chuyên mục của bài báo số {index} là gì?", article["feed"]),
+        (f"Bài báo số {index} nằm trên tên miền nào?", domain),
+        (f"URL của bài báo số {index} là gì?", article["url"]),
         (f"Tiêu đề của bài báo số {index} là gì?", article["title"]),
     ]
     if article["published"]:
         candidates.append((f"Bài báo số {index} được đăng ngày nào?", article["published"]))
+        candidates.append((f"Ngày đăng của bài báo số {index} là gì?", article["published"]))
     if article["description"]:
         candidates.append((f"Tóm tắt của bài báo số {index} là gì?", article["description"]))
-    lead = first_sentence(article["body"])
-    if 5 <= len(lead.split()) <= 60:
-        candidates.append((f"Câu mở đầu phần nội dung của bài báo số {index} là gì?", lead))
+        candidates.append((f"Bài báo số {index} được tóm tắt như thế nào?", article["description"]))
+    if sentences:
+        candidates.append((f"Câu mở đầu phần nội dung của bài báo số {index} là gì?", sentences[0]))
+        candidates.append((f"Câu đầu tiên trong nội dung bài báo số {index} là gì?", sentences[0]))
+    if len(sentences) > 1:
+        candidates.append((f"Câu thứ hai trong nội dung bài báo số {index} là gì?", sentences[1]))
+    if len(sentences) > 2:
+        candidates.append((f"Câu thứ ba trong nội dung bài báo số {index} là gì?", sentences[2]))
+    if len(sentences) > 3:
+        candidates.append((f"Câu cuối cùng trong nội dung bài báo số {index} là gì?", sentences[-1]))
+    opening_words = first_words(article["body"], 12)
+    if opening_words:
+        candidates.append((f"12 từ đầu tiên trong nội dung bài báo số {index} là gì?", opening_words))
 
     qas = []
+    seen_pairs: set[tuple[str, str]] = set()
     for qa_idx, (question, answer) in enumerate(candidates, 1):
+        if (question, answer) in seen_pairs:
+            continue
+        seen_pairs.add((question, answer))
         answer_start = context.find(answer)
         if answer_start == -1:
             continue
@@ -179,6 +216,7 @@ def main() -> None:
     parser.add_argument("--out-dir", default="data/news_finetune")
     parser.add_argument("--max-articles", type=int, default=90)
     parser.add_argument("--target-words", type=int, default=50000)
+    parser.add_argument("--target-qa", type=int, default=1000)
     parser.add_argument("--delay", type=float, default=0.2)
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
@@ -231,6 +269,10 @@ def main() -> None:
     qa_records: list[dict] = []
     for idx, article in enumerate(articles, 1):
         qa_records.extend(make_qa(article, idx))
+    if len(qa_records) > args.target_qa:
+        rng = random.Random(args.seed)
+        rng.shuffle(qa_records)
+        qa_records = qa_records[: args.target_qa]
     train, valid, test = split_records(qa_records, args.seed)
 
     write_json(out_dir / "qa_squad_train.json", to_squad(train, "Vietnamese news train"))
