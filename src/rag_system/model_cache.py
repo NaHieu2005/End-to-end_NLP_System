@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import os
+import platform
+from collections import namedtuple
 from pathlib import Path
 
 
@@ -17,3 +19,14 @@ def configure_hf_cache(cache_dir: str | Path | None = None) -> Path:
     os.environ.setdefault("HF_HUB_CACHE", str(target / "hub"))
     os.environ.setdefault("SENTENCE_TRANSFORMERS_HOME", str(target / "sentence_transformers"))
     return target
+
+
+def avoid_windows_platform_wmi_probe() -> None:
+    """Avoid a PyTorch import hang when Windows WMI queries stall."""
+    if os.name == "nt":
+        uname_type = namedtuple("uname_result", "system node release version machine processor")
+        safe_uname = uname_type("Windows", "", "", "", "AMD64", "AMD64")
+        platform.system = lambda: "Windows"  # type: ignore[assignment]
+        platform.machine = lambda: "AMD64"  # type: ignore[assignment]
+        platform.processor = lambda: "AMD64"  # type: ignore[assignment]
+        platform.uname = lambda: safe_uname  # type: ignore[assignment]

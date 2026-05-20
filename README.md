@@ -165,7 +165,7 @@ Metrics reported:
 Generate the news corpus and the train/test QA files again:
 
 ```bash
-python scripts/prepare_news_rag_data.py --max-articles 90 --target-words 50000 --target-qa 1000
+python scripts/prepare_news_rag_data.py --max-articles 90 --target-qa 1000
 ```
 
 ## Submission Checklist

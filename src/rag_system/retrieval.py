@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 import pickle
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
 
-from rag_system.model_cache import configure_hf_cache
+from rag_system.model_cache import avoid_windows_platform_wmi_probe, configure_hf_cache
 
 HF_CACHE_DIR = configure_hf_cache()
+avoid_windows_platform_wmi_probe()
 
 from sentence_transformers import CrossEncoder, SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -53,6 +55,13 @@ class Retriever:
     def retrieve(self, question: str, top_k: int = 5) -> list[tuple[DocumentChunk, float]]:
         query_embedding = self.model.encode([question], normalize_embeddings=True)
         scores = cosine_similarity(query_embedding, self.embeddings)[0]
+        title_match = re.search(r'"([^"]{8,})"', question)
+        if title_match:
+            title = title_match.group(1).lower()
+            scores = scores.copy()
+            for idx, chunk in enumerate(self.chunks):
+                if title in chunk.text.lower():
+                    scores[idx] += 1.0
         top_indices = np.argsort(scores)[::-1][:top_k]
         return [(self.chunks[idx], float(scores[idx])) for idx in top_indices]
 

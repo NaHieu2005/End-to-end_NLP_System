@@ -195,7 +195,7 @@ def main() -> None:
     parser.add_argument("--train-dir", default="data/train")
     parser.add_argument("--test-dir", default="data/test")
     parser.add_argument("--max-articles", type=int, default=90)
-    parser.add_argument("--target-words", type=int, default=50000)
+    parser.add_argument("--target-words", type=int, default=0, help="0 means keep all crawled article text.")
     parser.add_argument("--target-qa", type=int, default=1000)
     parser.add_argument("--train-ratio", type=float, default=0.85)
     parser.add_argument("--delay", type=float, default=0.2)
@@ -240,11 +240,15 @@ def main() -> None:
     for idx, article in enumerate(articles, 1):
         text = article_context(article, idx)
         words = text.split()
-        remaining = args.target_words - word_count
-        if remaining <= 0:
-            break
-        corpus_parts.append(" ".join(words[:remaining]))
-        word_count += min(len(words), remaining)
+        if args.target_words > 0:
+            remaining = args.target_words - word_count
+            if remaining <= 0:
+                break
+            corpus_parts.append(" ".join(words[:remaining]))
+            word_count += min(len(words), remaining)
+        else:
+            corpus_parts.append(text)
+            word_count += len(words)
     corpus = "\n\n".join(corpus_parts)
     (raw_dir / "corpus_long.txt").write_text(corpus + "\n", encoding="utf-8")
 
