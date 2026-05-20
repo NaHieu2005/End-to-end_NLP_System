@@ -1,46 +1,33 @@
 # End-to-end NLP System
 
-Retrieval Augmented Generation (RAG) project for factual question answering.
+Retrieval Augmented Generation (RAG) project for factual question answering over a public Vietnamese news corpus.
 
-The system follows the assignment format:
+## Submission Files
 
-- input questions: `data/test/questions.txt`
-- reference answers: `data/test/reference_answers.txt`
-- generated answers: `system_outputs/system_output_1.txt`
-- train data: `data/train/questions.txt` and `data/train/reference_answers.txt`
+- `github_url.txt`: repository URL.
+- `contributions.md`: contribution summary.
+- `reports/report.md`: project report source.
+- `data/raw/news/corpus_long.txt`: raw public knowledge resource.
+- `data/train/questions.txt` and `data/train/reference_answers.txt`: training/development QA set.
+- `data/test/questions.txt` and `data/test/reference_answers.txt`: annotated test QA set.
+- `system_outputs/system_output_1.txt`: generated answers for the test questions.
 
-## Project Structure
+## Data
+
+The current dataset was built from public VnExpress RSS/article pages:
+
+- 90 articles from `giao_duc`, `khoa_hoc`, and `so_hoa`.
+- 76,213 words in the raw corpus.
+- 1,000 QA examples in total.
+- 850 train/development examples and 150 test examples.
+
+Questions are direct article-title questions, for example:
 
 ```text
-.
-├── data/
-│   ├── raw/                  # Public source documents: HTML/PDF/TXT
-│   ├── processed/            # Cleaned text chunks and retrieval index
-│   ├── train/
-│   │   ├── questions.txt
-│   │   └── reference_answers.txt
-│   └── test/
-│       ├── questions.txt
-│       └── reference_answers.txt
-├── scripts/
-│   ├── build_corpus.py       # Clean raw documents into chunks
-│   ├── build_index.py        # Embed chunks and build retrieval index
-│   ├── run_rag.py            # Generate answers for questions
-│   └── evaluate.py           # Exact match / F1 / answer recall
-├── src/
-│   └── rag_system/
-│       ├── __init__.py
-│       ├── evaluation.py
-│       ├── io_utils.py
-│       ├── qa.py
-│       └── retrieval.py
-├── system_outputs/
-│   └── system_output_1.txt
-├── contributions.md
-├── github_url.txt
-└── reports/
-    └── report.md
+Chuyen muc cua bai viet "Thay tro thi hai xoai, thu hoach nua tan sau 20 phut" la gi?
 ```
+
+The raw corpus stores article metadata and body text in a plain text format, and `data/processed/corpus.jsonl` stores the cleaned chunks used by the retriever.
 
 ## Setup
 
@@ -50,93 +37,34 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-The default implementation uses open-source Hugging Face accessible models:
+The implementation uses open-source Hugging Face models:
 
 - embedding: `sentence-transformers/paraphrase-multilingual-mpnet-base-v2`
-- reranker: `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`
-- extractive Vietnamese QA reader: `letrunglinh/qa_pnc`
+- optional reranker: `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`
+- Vietnamese extractive QA reader: `letrunglinh/qa_pnc`
 
-You can change these with command-line flags.
+Model files are cached under `.hf_cache/` in this project directory.
 
-Model files are cached under `.hf_cache/` in this project directory on drive F, not under the default user cache on drive C.
+## Rebuild
 
-## Prepare Data
-
-Place public source documents in `data/raw/`. Supported extensions:
-
-- `.txt`
-- `.html`, `.htm`
-- `.pdf`
-
-Build the cleaned corpus and retrieval index:
+Generate the news data again:
 
 ```bash
-python scripts/build_corpus.py --raw-dir data/raw --out data/processed/corpus.jsonl
-python scripts/build_index.py --corpus data/processed/corpus.jsonl --out data/processed/index.pkl
+python scripts/prepare_news_rag_data.py --max-articles 90 --target-qa 1000
 ```
 
-The current news dataset is stored in the original assignment format:
-
-- source corpus: `data/raw/news/corpus_long.txt`
-- train questions: `data/train/questions.txt`
-- train references: `data/train/reference_answers.txt`
-- test questions: `data/test/questions.txt`
-- test references: `data/test/reference_answers.txt`
-- split: 850 train / 150 test
-
-To use only the news corpus when rebuilding the index:
+Build the cleaned corpus and retrieval index:
 
 ```bash
 python scripts/build_corpus.py --raw-dir data/raw/news --out data/processed/corpus.jsonl
 python scripts/build_index.py --corpus data/processed/corpus.jsonl --out data/processed/index.pkl
 ```
 
-## Run RAG
+`data/processed/index.pkl` is ignored by git because it is a generated binary file.
 
-```bash
-python scripts/run_rag.py ^
-  --questions data/test/questions.txt ^
-  --index data/processed/index.pkl ^
-  --out system_outputs/system_output_1.txt
-```
+## Run
 
-Each output line contains one concise answer for the corresponding input question.
-
-## Ask Interactively
-
-Load the RAG system once, then type questions in the terminal:
-
-```bash
-python scripts/chat_rag.py
-```
-
-Ask one question and exit:
-
-```bash
-python scripts/chat_rag.py --question "UET tuyển sinh đại học chính quy năm 2026 theo mã trường nào?"
-```
-
-Show retrieved sources:
-
-```bash
-python scripts/chat_rag.py --show-sources
-```
-
-Use Ollama as a stricter Vietnamese-only generator over retrieved documents:
-
-```bash
-python scripts/chat_ollama_rag.py
-```
-
-Ask one Ollama-backed RAG question:
-
-```bash
-python scripts/chat_ollama_rag.py --question "Chuyên mục của bài viết \"Thầy trò thi hái xoài, thu hoạch nửa tấn sau 20 phút\" là gì?"
-```
-
-This script instructs the local model to answer only from retrieved context. If the retrieved documents do not contain enough evidence, it should answer: `Không có dữ kiện trong tài liệu.`
-
-If your machine runs out of memory, disable reranking:
+Generate answers for the test set:
 
 ```bash
 python scripts/run_rag.py ^
@@ -144,6 +72,12 @@ python scripts/run_rag.py ^
   --index data/processed/index.pkl ^
   --out system_outputs/system_output_1.txt ^
   --no-reranker
+```
+
+Interactive single-question mode:
+
+```bash
+python scripts/chat_rag.py --question "Chuyen muc cua bai viet \"Thay tro thi hai xoai, thu hoach nua tan sau 20 phut\" la gi?" --no-reranker
 ```
 
 ## Evaluate
@@ -154,27 +88,10 @@ python scripts/evaluate.py ^
   --references data/test/reference_answers.txt
 ```
 
-Metrics reported:
+Latest local evaluation on the annotated test set:
 
-- exact match
-- token F1
-- answer recall
-
-## Regenerate News Data
-
-Generate the news corpus and the train/test QA files again:
-
-```bash
-python scripts/prepare_news_rag_data.py --max-articles 90 --target-qa 1000
+```text
+exact_match: 0.9067
+f1: 0.9332
+answer_recall: 0.9133
 ```
-
-## Submission Checklist
-
-- `report.pdf` or report source in `reports/`
-- `github_url.txt`
-- `contributions.md`
-- `data/train/questions.txt`
-- `data/train/reference_answers.txt`
-- `data/test/questions.txt`
-- `data/test/reference_answers.txt`
-- `system_outputs/system_output_1.txt`

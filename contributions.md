@@ -1,18 +1,19 @@
 # Contributions
 
-Update this file before submission with each team member's contributions.
+## Data Collection And Processing
+
+- NaHieu2005: collected public VnExpress RSS/article data from the `giao_duc`, `khoa_hoc`, and `so_hoa` feeds.
+- NaHieu2005: cleaned article metadata and body text into `data/raw/news/corpus_long.txt`.
+- NaHieu2005: implemented corpus chunking into `data/processed/corpus.jsonl`.
 
 ## Data Annotation
 
-- Member A: annotated instances 1-X.
-- Member B: validated annotations and resolved disagreements.
+- NaHieu2005: generated and validated 1,000 article-grounded QA pairs from the collected corpus.
+- NaHieu2005: split the QA data into 850 training/development examples and 150 test examples.
+- NaHieu2005: checked that questions use public-document evidence and that test references are aligned with the article fields or body text.
 
-## Data Collection and Processing
+## Modeling And Evaluation
 
-- Member A: collected public source documents and cleaned raw HTML/PDF/TXT files.
-- Member B: implemented preprocessing and corpus chunking.
-
-## Modeling and Evaluation
-
-- Member A: implemented retrieval and QA reader.
-- Member B: ran experiments, evaluated metrics, and analyzed errors.
+- NaHieu2005: implemented dense retrieval, optional reranking, extractive QA, and evaluation scripts.
+- NaHieu2005: ran the final test-set generation and reported exact match, token F1, and answer recall.
+- NaHieu2005: prepared README, report source, repository structure, and final system output.
