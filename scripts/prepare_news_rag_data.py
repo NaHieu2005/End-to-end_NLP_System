@@ -78,11 +78,13 @@ def extract_article(item: dict[str, str]) -> dict[str, str] | None:
     }
 
 
-def article_context(article: dict[str, str]) -> str:
+def article_context(article: dict[str, str], index: int | None = None) -> str:
     domain = urlparse(article["url"]).netloc
+    article_label = f"Bài báo số {index}" if index is not None else ""
     return clean_text(
         "\n".join(
             [
+                article_label,
                 f"Nguồn: {article['source']}",
                 f"Chuyên mục: {article['feed']}",
                 f"Tên miền: {domain}",
@@ -115,7 +117,7 @@ def first_words(text: str, count: int) -> str:
 
 
 def make_qa(article: dict[str, str], index: int) -> list[dict]:
-    context = article_context(article)
+    context = article_context(article, index)
     domain = urlparse(article["url"]).netloc
     sentences = body_sentences(article["body"])
     candidates = [
@@ -237,8 +239,8 @@ def main() -> None:
 
     corpus_parts: list[str] = []
     word_count = 0
-    for article in articles:
-        text = article_context(article)
+    for idx, article in enumerate(articles, 1):
+        text = article_context(article, idx)
         words = text.split()
         remaining = args.target_words - word_count
         if remaining <= 0:

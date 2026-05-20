@@ -122,6 +122,20 @@ Show retrieved sources:
 python scripts/chat_rag.py --show-sources
 ```
 
+Use Ollama as a stricter Vietnamese-only generator over retrieved documents:
+
+```bash
+python scripts/chat_ollama_rag.py
+```
+
+Ask one Ollama-backed RAG question:
+
+```bash
+python scripts/chat_ollama_rag.py --question "Chuyên mục của bài báo số 43 là gì?"
+```
+
+This script instructs the local model to answer only from retrieved context. If the retrieved documents do not contain enough evidence, it should answer: `Không có dữ kiện trong tài liệu.`
+
 If your machine runs out of memory, disable reranking:
 
 ```bash
