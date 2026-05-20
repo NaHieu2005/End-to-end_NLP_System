@@ -131,7 +131,7 @@ python scripts/chat_ollama_rag.py
 Ask one Ollama-backed RAG question:
 
 ```bash
-python scripts/chat_ollama_rag.py --question "Chuyên mục của bài báo số 43 là gì?"
+python scripts/chat_ollama_rag.py --question "Chuyên mục của bài viết \"Thầy trò thi hái xoài, thu hoạch nửa tấn sau 20 phút\" là gì?"
 ```
 
 This script instructs the local model to answer only from retrieved context. If the retrieved documents do not contain enough evidence, it should answer: `Không có dữ kiện trong tài liệu.`

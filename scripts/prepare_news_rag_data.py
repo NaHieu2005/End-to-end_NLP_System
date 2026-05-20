@@ -80,11 +80,9 @@ def extract_article(item: dict[str, str]) -> dict[str, str] | None:
 
 def article_context(article: dict[str, str], index: int | None = None) -> str:
     domain = urlparse(article["url"]).netloc
-    article_label = f"Bài báo số {index}" if index is not None else ""
     return clean_text(
         "\n".join(
             [
-                article_label,
                 f"Nguồn: {article['source']}",
                 f"Chuyên mục: {article['feed']}",
                 f"Tên miền: {domain}",
@@ -120,33 +118,33 @@ def make_qa(article: dict[str, str], index: int) -> list[dict]:
     context = article_context(article, index)
     domain = urlparse(article["url"]).netloc
     sentences = body_sentences(article["body"])
+    title = article["title"]
     candidates = [
-        (f"Bài báo số {index} được đăng trên nguồn nào?", article["source"]),
-        (f"Nguồn của bài báo số {index} là gì?", article["source"]),
-        (f"Bài báo số {index} thuộc chuyên mục nào?", article["feed"]),
-        (f"Chuyên mục của bài báo số {index} là gì?", article["feed"]),
-        (f"Bài báo số {index} nằm trên tên miền nào?", domain),
-        (f"URL của bài báo số {index} là gì?", article["url"]),
-        (f"Tiêu đề của bài báo số {index} là gì?", article["title"]),
+        (f"Bài viết \"{title}\" được đăng trên nguồn nào?", article["source"]),
+        (f"Nguồn đăng bài \"{title}\" là gì?", article["source"]),
+        (f"Bài viết \"{title}\" thuộc chuyên mục nào?", article["feed"]),
+        (f"Chuyên mục của bài viết \"{title}\" là gì?", article["feed"]),
+        (f"Bài viết \"{title}\" nằm trên tên miền nào?", domain),
+        (f"URL của bài viết \"{title}\" là gì?", article["url"]),
     ]
     if article["published"]:
-        candidates.append((f"Bài báo số {index} được đăng ngày nào?", article["published"]))
-        candidates.append((f"Ngày đăng của bài báo số {index} là gì?", article["published"]))
+        candidates.append((f"Bài viết \"{title}\" được đăng ngày nào?", article["published"]))
+        candidates.append((f"Ngày đăng của bài viết \"{title}\" là gì?", article["published"]))
     if article["description"]:
-        candidates.append((f"Tóm tắt của bài báo số {index} là gì?", article["description"]))
-        candidates.append((f"Bài báo số {index} được tóm tắt như thế nào?", article["description"]))
+        candidates.append((f"Bài viết \"{title}\" được tóm tắt như thế nào?", article["description"]))
+        candidates.append((f"Nội dung chính của bài viết \"{title}\" là gì?", article["description"]))
     if sentences:
-        candidates.append((f"Câu mở đầu phần nội dung của bài báo số {index} là gì?", sentences[0]))
-        candidates.append((f"Câu đầu tiên trong nội dung bài báo số {index} là gì?", sentences[0]))
+        candidates.append((f"Câu mở đầu của bài viết \"{title}\" là gì?", sentences[0]))
+        candidates.append((f"Bài viết \"{title}\" mở đầu bằng thông tin nào?", sentences[0]))
     if len(sentences) > 1:
-        candidates.append((f"Câu thứ hai trong nội dung bài báo số {index} là gì?", sentences[1]))
+        candidates.append((f"Thông tin thứ hai trong bài viết \"{title}\" là gì?", sentences[1]))
     if len(sentences) > 2:
-        candidates.append((f"Câu thứ ba trong nội dung bài báo số {index} là gì?", sentences[2]))
+        candidates.append((f"Thông tin thứ ba trong bài viết \"{title}\" là gì?", sentences[2]))
     if len(sentences) > 3:
-        candidates.append((f"Câu cuối cùng trong nội dung bài báo số {index} là gì?", sentences[-1]))
+        candidates.append((f"Bài viết \"{title}\" kết thúc bằng thông tin nào?", sentences[-1]))
     opening_words = first_words(article["body"], 12)
     if opening_words:
-        candidates.append((f"12 từ đầu tiên trong nội dung bài báo số {index} là gì?", opening_words))
+        candidates.append((f"Phần nội dung của bài viết \"{title}\" bắt đầu bằng những từ nào?", opening_words))
 
     qas = []
     seen_pairs: set[tuple[str, str]] = set()

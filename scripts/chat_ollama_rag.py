@@ -58,8 +58,8 @@ class LightweightRetriever:
         scores = []
         for idx, terms in enumerate(self.chunk_terms):
             overlap = sum(min(count, terms.get(term, 0)) for term, count in query_terms.items())
-            article_bonus = self._article_number_bonus(question, self.chunks[idx].text)
-            score = overlap + article_bonus
+            title_bonus = self._quoted_title_bonus(question, self.chunks[idx].text)
+            score = overlap + title_bonus
             if score > 0:
                 scores.append((idx, float(score)))
         ranked = sorted(scores, key=lambda item: item[1], reverse=True)[:top_k]
@@ -70,21 +70,22 @@ class LightweightRetriever:
         return re.findall(r"[\wÀ-ỹ]+", text.lower(), flags=re.UNICODE)
 
     @staticmethod
-    def _article_number_bonus(question: str, text: str) -> int:
-        match = re.search(r"bài báo số\s+(\d+)", question.lower())
+    def _quoted_title_bonus(question: str, text: str) -> int:
+        match = re.search(r"\"([^\"]{8,})\"", question)
         if not match:
             return 0
-        return 20 if f"bài báo số {match.group(1)}" in text.lower() else 0
+        title = match.group(1).lower()
+        return 30 if title in text.lower() else 0
 
 
 def focused_text(text: str, question: str, max_chars: int) -> str:
     compact = " ".join(text.split())
-    match = re.search(r"bài báo số\s+(\d+)", question.lower())
+    match = re.search(r"\"([^\"]{8,})\"", question)
     if match:
-        needle = f"bài báo số {match.group(1)}"
+        needle = match.group(1).lower()
         position = compact.lower().find(needle)
         if position >= 0:
-            start = max(0, position - 120)
+            start = max(0, position - 350)
             end = min(len(compact), position + max_chars)
             prefix = "... " if start > 0 else ""
             suffix = " ..." if end < len(compact) else ""
