@@ -1,0 +1,312 @@
+% !TEX program = xelatex
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{fontspec}
+\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{TeX Gyre Termes}}
+\IfFontExistsTF{Arial}{\setsansfont{Arial}}{\setsansfont{TeX Gyre Heros}}
+\IfFontExistsTF{Consolas}{\setmonofont{Consolas}}{\setmonofont{Latin Modern Mono}}
+
+\usepackage[vietnamese]{babel}
+\usepackage[a4paper,margin=2.4cm,headheight=25pt]{geometry}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{xurl}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+
+\definecolor{MainBlue}{HTML}{1F4E79}
+\definecolor{SoftBlue}{HTML}{EAF3F8}
+\definecolor{Accent}{HTML}{C0504D}
+\definecolor{DarkGray}{HTML}{333333}
+\definecolor{LightGray}{HTML}{F4F6F8}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=MainBlue,
+  urlcolor=MainBlue,
+  citecolor=MainBlue,
+  pdftitle={Báo cáo hệ thống RAG hỏi đáp tiếng Việt},
+  pdfauthor={NaHieu2005}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textsf{End-to-end NLP System}}
+\rhead{\textsf{Báo cáo RAG}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{MainBlue}\leaders\hrule height \headrulewidth\hfill}}
+
+\titleformat{\section}
+  {\Large\bfseries\sffamily\color{MainBlue}}
+  {\thesection}{0.8em}{}
+\titleformat{\subsection}
+  {\large\bfseries\sffamily\color{DarkGray}}
+  {\thesubsection}{0.8em}{}
+
+\setlist[itemize]{leftmargin=1.4em,itemsep=0.2em,topsep=0.3em}
+\setlist[enumerate]{leftmargin=1.6em,itemsep=0.2em,topsep=0.3em}
+\urlstyle{tt}
+\newcommand{\code}[1]{\path{#1}}
+\newcommand{\metric}[2]{\textbf{#1}: #2}
+
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  \vspace*{1.5cm}
+  {\Huge\bfseries\sffamily\color{MainBlue} Báo cáo hệ thống hỏi đáp RAG\par}
+  \vspace{0.4cm}
+  {\Large\bfseries End-to-end NLP System\par}
+  \vspace{0.8cm}
+  {\large Hệ thống hỏi đáp trích xuất trên kho dữ liệu báo tiếng Việt\par}
+  \vfill
+  \begin{tikzpicture}
+    \node[draw=MainBlue, fill=SoftBlue, rounded corners=4pt, minimum width=3.2cm, minimum height=1cm, align=center] (q) {Câu hỏi};
+    \node[draw=MainBlue, fill=SoftBlue, rounded corners=4pt, minimum width=3.2cm, minimum height=1cm, right=1.4cm of q, align=center] (r) {Truy hồi\\đoạn liên quan};
+    \node[draw=MainBlue, fill=SoftBlue, rounded corners=4pt, minimum width=3.2cm, minimum height=1cm, right=1.4cm of r, align=center] (a) {Trích xuất\\câu trả lời};
+    \draw[-{Latex[length=3mm]}, thick, color=MainBlue] (q) -- (r);
+    \draw[-{Latex[length=3mm]}, thick, color=MainBlue] (r) -- (a);
+  \end{tikzpicture}
+  \vfill
+  \begin{tabular}{rl}
+    \textbf{Sinh viên / nhóm:} & NaHieu2005 \\
+    \textbf{Repository:} & \url{https://github.com/NaHieu2005/End-to-end_NLP_System} \\
+    \textbf{Output chính:} & \code{system_outputs/system_output_1.txt} \\
+    \textbf{Ngày hoàn thiện:} & 20/05/2026 \\
+  \end{tabular}
+  \vspace*{1.2cm}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Tổng quan bài toán}
+
+Bài tập yêu cầu xây dựng một hệ thống NLP end-to-end cho bài toán hỏi đáp dựa trên một nguồn tri thức công khai. Hệ thống nhận một câu hỏi, tìm các đoạn văn bản liên quan trong kho dữ liệu đã thu thập, sau đó sinh ra một câu trả lời ngắn gọn. Kết quả cuối cùng được ghi vào \code{system_outputs/system_output_1.txt}, trong đó mỗi dòng tương ứng với một câu hỏi trong tập kiểm thử.
+
+Hướng tiếp cận của project là Retrieval Augmented Generation (RAG). Thay vì để mô hình trả lời hoàn toàn dựa trên tri thức đã học sẵn, hệ thống luôn truy hồi tài liệu trước rồi mới trích xuất câu trả lời từ ngữ cảnh được tìm thấy. Cách làm này phù hợp với các câu hỏi có tính sự kiện như ngày đăng, chuyên mục, nguồn bài viết, URL, tóm tắt và nội dung chính của bài báo.
+
+\section{Dữ liệu}
+
+\subsection{Nguồn tri thức}
+
+Dữ liệu được thu thập từ các RSS feed và trang bài viết công khai của VnExpress. Ba nhóm chủ đề được chọn để tạo một kho dữ liệu đủ đa dạng nhưng vẫn có cấu trúc ổn định:
+
+\begin{itemize}
+  \item \code{giao_duc}: tin giáo dục, trường học, tuyển sinh và hoạt động đào tạo.
+  \item \code{khoa_hoc}: tin khoa học, nghiên cứu và công nghệ ứng dụng.
+  \item \code{so_hoa}: tin công nghệ số, thiết bị và sản phẩm.
+\end{itemize}
+
+Kho dữ liệu cuối cùng gồm 90 bài viết công khai với tổng cộng 76.213 từ. Mỗi bài viết được lưu kèm các trường thông tin: nguồn, chuyên mục, tên miền, URL, ngày đăng, tiêu đề, tóm tắt và nội dung bài viết. Các file dữ liệu chính là:
+
+\begin{itemize}
+  \item \code{data/raw/news/corpus_long.txt}: văn bản nguồn đã làm sạch ở dạng text.
+  \item \code{data/news/articles.jsonl}: bản ghi từng bài viết ở dạng JSONL.
+  \item \code{data/news/metadata.json}: thống kê và metadata của bộ dữ liệu.
+  \item \code{data/processed/corpus.jsonl}: các đoạn văn bản đã chunk để phục vụ truy hồi.
+\end{itemize}
+
+\subsection{Thu thập và làm sạch}
+
+Script \code{scripts/prepare_news_rag_data.py} đọc RSS feed, tải nội dung bài viết, trích xuất tiêu đề, ngày đăng, tóm tắt và các đoạn nội dung bằng BeautifulSoup. Sau đó, hệ thống chuẩn hóa khoảng trắng, bỏ phần rỗng và chuyển dữ liệu thành một corpus text thống nhất. Script \code{scripts/build_corpus.py} tiếp tục chia corpus thành các đoạn dài 900 từ, overlap 150 từ để hạn chế mất ngữ cảnh tại biên đoạn.
+
+Ở lần chạy cuối, quá trình tiền xử lý tạo ra 102 đoạn văn bản từ corpus 90 bài báo. File index nhị phân \code{data/processed/index.pkl} không được commit lên Git vì có thể tái tạo bằng script build index.
+
+\subsection{Tập hỏi đáp}
+
+Tập hỏi đáp được tạo từ metadata và nội dung bài viết. Các câu hỏi dùng tiêu đề bài báo trực tiếp, thay vì dùng các mã bài nhân tạo. Ví dụ:
+
+\begin{quote}
+\small
+\textit{Chuyen muc cua bai viet "Thay tro thi hai xoai, thu hoach nua tan sau 20 phut" la gi?}
+\end{quote}
+
+Các nhóm câu hỏi chính gồm:
+
+\begin{itemize}
+  \item hỏi nguồn, chuyên mục, tên miền;
+  \item hỏi URL và ngày đăng;
+  \item hỏi tóm tắt hoặc nội dung chính;
+  \item hỏi câu mở đầu, thông tin thứ hai, thông tin thứ ba, câu kết thúc hoặc các từ đầu tiên của bài viết.
+\end{itemize}
+
+Bộ dữ liệu cuối cùng có 1.000 cặp hỏi đáp:
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Tập dữ liệu} & \textbf{Số câu hỏi} & \textbf{Tỷ lệ} \\
+\midrule
+Train / development & 850 & 85\% \\
+Test & 150 & 15\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Đáp án tham chiếu được lấy trực tiếp từ trường metadata hoặc từ nội dung bài viết, nhờ vậy mỗi đáp án đều có bằng chứng trong nguồn tri thức.
+
+\subsection{Kiểm soát chất lượng dữ liệu}
+
+Tôi kiểm tra số dòng giữa file câu hỏi và file đáp án để đảm bảo ánh xạ một-một. Ngoài ra, các tiêu đề xuất hiện trong câu hỏi được đối chiếu với corpus để chắc chắn rằng bài viết tương ứng tồn tại trong nguồn tri thức. Trong quá trình phát triển, tôi phát hiện phiên bản corpus bị cắt ở 50.000 từ làm mất một số bài viết phía sau, trong khi tập QA vẫn chứa câu hỏi cho toàn bộ 90 bài. Lỗi này đã được sửa bằng cách giữ toàn bộ corpus 90 bài, sau đó build lại corpus xử lý, index truy hồi, output và kết quả đánh giá.
+
+Project được thực hiện bởi một người nên không có điểm inter-annotator agreement chính thức. Thay vào đó, dữ liệu được kiểm tra bằng các bước nhất quán tự động và rà soát thủ công một số mẫu câu hỏi.
+
+\section{Thiết kế hệ thống}
+
+\subsection{Kiến trúc tổng thể}
+
+Pipeline cuối cùng gồm bốn bước:
+
+\begin{enumerate}
+  \item tiền xử lý tài liệu và chia chunk;
+  \item mã hóa embedding cho chunk và câu hỏi;
+  \item truy hồi các chunk liên quan nhất;
+  \item trích xuất câu trả lời từ ngữ cảnh truy hồi được.
+\end{enumerate}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.0cm]
+  \tikzstyle{box}=[draw=MainBlue, fill=SoftBlue, rounded corners=3pt, align=center, minimum width=4.1cm, minimum height=0.85cm]
+  \node[box] (data) {Corpus VnExpress\\90 bài viết};
+  \node[box, below=of data] (chunk) {Chunking\\900 từ, overlap 150};
+  \node[box, below=of chunk] (embed) {Embedding\\multilingual MPNet};
+  \node[box, below=of embed] (retrieve) {Dense retrieval\\+ title boost};
+  \node[box, below=of retrieve] (answer) {Field extractor\\+ QA reader fallback};
+  \draw[-{Latex[length=2.5mm]}, thick, color=MainBlue] (data) -- (chunk);
+  \draw[-{Latex[length=2.5mm]}, thick, color=MainBlue] (chunk) -- (embed);
+  \draw[-{Latex[length=2.5mm]}, thick, color=MainBlue] (embed) -- (retrieve);
+  \draw[-{Latex[length=2.5mm]}, thick, color=MainBlue] (retrieve) -- (answer);
+\end{tikzpicture}
+\end{center}
+
+\subsection{Truy hồi}
+
+Retriever sử dụng mô hình \code{sentence-transformers/paraphrase-multilingual-mpnet-base-v2} để mã hóa câu hỏi và các đoạn văn bản. Điểm truy hồi dựa trên cosine similarity giữa embedding câu hỏi và embedding chunk.
+
+Vì tập câu hỏi tham chiếu bài viết bằng tiêu đề trong dấu ngoặc kép, tôi bổ sung cơ chế title boost. Nếu câu hỏi chứa tiêu đề và một chunk cũng chứa tiêu đề đó, chunk được cộng thêm điểm. Điều này giúp hệ thống ưu tiên đúng bài báo cần hỏi, tránh trường hợp truy hồi một bài có nội dung gần nghĩa nhưng không phải bài được nhắc tới.
+
+Hệ thống có hỗ trợ reranker \code{cross-encoder/mmarco-mMiniLMv2-L12-H384-v1}. Tuy nhiên, ở lần chạy cuối tôi dùng tham số \code{--no-reranker} để giảm thời gian chạy trên CPU cục bộ.
+
+\subsection{Sinh câu trả lời}
+
+Module chính nằm trong \code{src/rag_system/qa.py}. Hệ thống dùng hai đường trả lời:
+
+\begin{enumerate}
+  \item Bộ trích xuất trường nhanh cho các câu hỏi có cấu trúc theo tiêu đề bài viết. Bộ này lấy trực tiếp các trường như nguồn, chuyên mục, URL, ngày đăng, tóm tắt hoặc câu trong nội dung.
+  \item Mô hình đọc hiểu trích xuất \code{letrunglinh/qa_pnc} làm fallback cho các câu hỏi không khớp mẫu.
+\end{enumerate}
+
+Cách kết hợp này giữ cho câu trả lời bám sát tài liệu đã truy hồi, đồng thời vẫn có khả năng xử lý những câu hỏi ít cấu trúc hơn.
+
+\section{Thực nghiệm}
+
+\subsection{Metric đánh giá}
+
+Hệ thống được đánh giá bằng ba metric trong \code{scripts/evaluate.py}:
+
+\begin{itemize}
+  \item Exact match: dự đoán khớp hoàn toàn đáp án tham chiếu sau chuẩn hóa.
+  \item Token F1: đo độ chồng lặp token giữa dự đoán và đáp án.
+  \item Answer recall: kiểm tra đáp án tham chiếu có được bao phủ trong dự đoán hay không.
+\end{itemize}
+
+\subsection{Các phiên bản thử nghiệm}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}X r r r}
+\toprule
+\textbf{Phiên bản} & \textbf{Ghi chú} & \textbf{EM} & \textbf{F1} & \textbf{Recall} \\
+\midrule
+Dense retrieval + QA ban đầu & Corpus bị cắt 50.000 từ, một số bài được hỏi không có trong nguồn. & 0.3600 & 0.4719 & 0.3600 \\
+Title-aware retrieval + structured extractor & Truy hồi tốt hơn nhờ title boost, nhưng corpus vẫn thiếu bài phía sau. & 0.6733 & 0.7207 & 0.6800 \\
+Hệ thống cuối & Dùng toàn bộ 90 bài, title boost, structured extractor và QA fallback. & 0.9067 & 0.9332 & 0.9133 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Lệnh chạy cuối}
+
+\begin{verbatim}
+python scripts/build_corpus.py ^
+  --raw-dir data/raw/news ^
+  --out data/processed/corpus.jsonl
+
+python scripts/build_index.py ^
+  --corpus data/processed/corpus.jsonl ^
+  --out data/processed/index.pkl
+
+python scripts/run_rag.py ^
+  --questions data/test/questions.txt ^
+  --index data/processed/index.pkl ^
+  --out system_outputs/system_output_1.txt ^
+  --no-reranker
+
+python scripts/evaluate.py ^
+  --predictions system_outputs/system_output_1.txt ^
+  --references data/test/reference_answers.txt
+\end{verbatim}
+
+Kết quả đánh giá cuối trên 150 câu hỏi test:
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+\textbf{Metric} & \textbf{Giá trị} \\
+\midrule
+Exact match & 0.9067 \\
+Token F1 & 0.9332 \\
+Answer recall & 0.9133 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Phân tích kết quả}
+
+Hệ thống đạt kết quả tốt nhất ở các câu hỏi metadata như nguồn, chuyên mục, URL, ngày đăng và tóm tắt, vì các trường này được lưu rõ trong văn bản truy hồi. Các câu hỏi về câu mở đầu hoặc đoạn tóm tắt cũng hoạt động tốt khi title boost đưa đúng chunk chứa bài báo cần hỏi lên đầu.
+
+Những lỗi còn lại chủ yếu nằm ở nhóm câu hỏi về câu trong thân bài, ví dụ câu kết thúc hoặc thông tin thứ ba. Do chunk có thể chứa nhiều hơn một bài viết, việc lấy câu cuối hoặc câu thứ ba đôi khi bị ảnh hưởng nếu biên bài viết chưa được tách tuyệt đối. Cơ chế title boost đã giảm lỗi này đáng kể, nhưng nếu mở rộng project, nên chuyển sang document store theo từng bài báo thay vì chunk text thuần.
+
+Cải thiện lớn nhất đến từ việc sửa độ phủ corpus. Phiên bản 50.000 từ ban đầu khiến tập test không nhất quán với nguồn tri thức, vì một số bài bị mất khỏi corpus. Khi giữ đầy đủ 90 bài, điểm Exact Match tăng lên 0.9067 và F1 tăng lên 0.9332.
+
+So với cách trả lời closed-book, RAG phù hợp hơn với bài toán này vì câu trả lời được lấy từ tài liệu công khai đã thu thập. Hệ thống không phải dựa vào trí nhớ của mô hình cho các thông tin dễ thay đổi như ngày đăng, URL, tiêu đề và tóm tắt bài báo.
+
+\section{Hạn chế và hướng phát triển}
+
+\begin{itemize}
+  \item Tập câu hỏi được tạo theo template nên chưa đa dạng bằng câu hỏi do người viết hoàn toàn.
+  \item Chưa có điểm inter-annotator agreement vì project được làm bởi một người.
+  \item Hệ thống hiện tối ưu cho câu hỏi có tiêu đề bài viết; câu hỏi không nêu tiêu đề có thể cần reranker hoặc retriever mạnh hơn.
+  \item Index truy hồi là file sinh ra, không commit lên Git, nên cần build lại trước khi chạy từ đầu.
+\end{itemize}
+
+Một hướng phát triển hợp lý là lưu mỗi bài báo thành một document riêng có metadata tách biệt. Khi đó hệ thống có thể truy hồi theo cấp bài viết trước, rồi mới chọn đoạn hoặc câu trong bài. Cách này sẽ giảm lỗi nhầm biên bài viết và giúp mở rộng sang câu hỏi tự nhiên hơn.
+
+\section{Kết luận}
+
+Project đã xây dựng được một pipeline RAG hoàn chỉnh cho hỏi đáp tiếng Việt trên dữ liệu báo công khai. Hệ thống bao gồm thu thập dữ liệu, làm sạch, tạo tập QA train/test, build corpus, build index, chạy hỏi đáp và đánh giá. Kết quả cuối đạt \metric{Exact Match}{0.9067}, \metric{F1}{0.9332} và \metric{Answer Recall}{0.9133} trên tập test 150 câu hỏi.
+
+Các file nộp chính đã được chuẩn bị trong repository, bao gồm dữ liệu train/test, corpus nguồn, output hệ thống, script chạy và báo cáo này.
+
+\section*{Tài liệu tham khảo}
+\addcontentsline{toc}{section}{Tài liệu tham khảo}
+
+\begin{itemize}
+  \item Lewis, Patrick et al. 2020. Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks.
+  \item Rajpurkar, Pranav et al. 2016. SQuAD: 100,000+ Questions for Machine Comprehension of Text.
+  \item Hugging Face Transformers documentation.
+  \item Sentence Transformers documentation.
+  \item Các RSS feed và trang bài viết công khai của VnExpress.
+\end{itemize}
+
+\end{document}

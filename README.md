@@ -6,7 +6,7 @@ Retrieval Augmented Generation (RAG) project for factual question answering over
 
 - `github_url.txt`: repository URL.
 - `contributions.md`: contribution summary.
-- `reports/report.md`: project report source.
+- `reports/report.tex`: Vietnamese LaTeX project report source.
 - `data/raw/news/corpus_long.txt`: raw public knowledge resource.
 - `data/train/questions.txt` and `data/train/reference_answers.txt`: training/development QA set.
 - `data/test/questions.txt` and `data/test/reference_answers.txt`: annotated test QA set.
