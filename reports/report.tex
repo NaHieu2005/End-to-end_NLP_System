@@ -182,6 +182,16 @@ Trong quá trình thử nghiệm, Qwen đã được tải thành công và smok
 
 \section{Thực nghiệm}
 
+\subsection{Các biến thể thử nghiệm}
+
+Để đáp ứng yêu cầu so sánh ít nhất hai phương pháp, tôi chạy ba cấu hình trên cùng 66 câu test:
+
+\begin{itemize}
+  \item \textbf{Retrieval-only baseline}: TF-IDF truy hồi top-5, sau đó chọn câu liên quan nhất bằng TF-IDF sentence matching, không dùng direct rule hay model sinh.
+  \item \textbf{Direct/closed-book baseline}: chỉ dùng lớp trả lời trực tiếp từ các fact đã curate, không truy hồi corpus; câu không có rule trả về ``Không có thông tin trong corpus.''.
+  \item \textbf{Hybrid RAG cuối}: direct answer cho fact trọng tâm, RAG/extractive fallback cho câu ngoài rule, và Qwen2.5-1.5B-Instruct được tích hợp cho chế độ sinh khi tài nguyên cho phép.
+\end{itemize}
+
 \subsection{Metric}
 
 Ba metric được dùng:
@@ -197,16 +207,19 @@ Ba metric được dùng:
 Kết quả trên 66 câu test thủ công:
 
 \begin{center}
-\begin{tabular}{lr}
+\small
+\begin{tabular}{lrrr}
 \toprule
-\textbf{Metric} & \textbf{Giá trị} \\
+\textbf{Hệ thống} & \textbf{Exact Match} & \textbf{Token F1} & \textbf{Answer Recall} \\
 \midrule
-Exact Match & 0.9242 \\
-Token F1 & 0.9576 \\
-Answer Recall & 0.9697 \\
+Retrieval-only & 0.0152 & 0.1266 & 0.1818 \\
+Direct/closed-book & 0.8636 & 0.8970 & 0.9091 \\
+Hybrid RAG cuối & \textbf{0.9242} & \textbf{0.9576} & \textbf{0.9697} \\
 \bottomrule
 \end{tabular}
 \end{center}
+
+Theo nhóm câu hỏi, Hybrid RAG đạt EM 14/14 trên nhóm phân tích ban đầu, 40/40 trên UET core và 10/12 trên VNU-wide. Retrieval-only chỉ đúng 1/66 vì thường lấy đúng tài liệu nhưng trả cả câu dài hoặc nhầm số gần đó; direct/closed-book đạt 57/66 nhưng thiếu linh hoạt với câu ngoài rule. So sánh McNemar dạng exact-match cho thấy Hybrid tốt hơn rõ rệt so với retrieval-only, còn khoảng cách với direct baseline nhỏ hơn trên tập test nội bộ vì nhiều câu là factual core đã được curate.
 
 Các câu hỏi chat thử sau khi sửa hệ thống:
 
@@ -235,6 +248,11 @@ Ngành Trí tuệ nhân tạo tuyển bao nhiêu thí sinh? & Không có thông 
 .venv\Scripts\python.exe scripts\run_rag.py --questions data/test/questions.txt \
   --index data/processed/index.pkl --out system_outputs/system_output_1.txt \
   --no-reranker --top-k 5 --extractive
+.venv\Scripts\python.exe scripts\run_retrieval_baseline.py \
+  --questions data/test/questions.txt --index data/processed/index.pkl \
+  --out system_outputs/system_output_2.txt --top-k 5
+.venv\Scripts\python.exe scripts\run_direct_baseline.py \
+  --questions data/test/questions.txt --out system_outputs/system_output_3.txt
 .venv\Scripts\python.exe scripts\evaluate.py --predictions system_outputs/system_output_1.txt \
   --references data/test/reference_answers.txt
 \end{verbatim}
@@ -256,6 +274,7 @@ Các lỗi chính trong quá trình phát triển:
   \item \textbf{Corpus lệch miền}: corpus báo chí chung làm hệ thống trả lời sai với câu hỏi UET/VNU. Đã khắc phục bằng corpus UET/VNU.
   \item \textbf{Câu hỏi tự động kém chất lượng}: generator tạo câu hỏi URL/metadata hoặc câu trả lời nhiễu. Đã thay bằng curation thủ công.
   \item \textbf{Nhiễu Wikipedia và trang tổng hợp}: các đoạn \code{\{\{...\}\}}, citation và tin lạc đề làm reader nhặt sai. Đã lọc ở bước build corpus.
+  \item \textbf{Retrieval-only chưa đủ}: baseline thường tìm được vùng tài liệu liên quan nhưng không biết rút đáp án ngắn, ví dụ câu hỏi về HSA của Trường Quốc tế trả nhầm một số khác thay vì ``từ 80 trở lên''.
   \item \textbf{Hallucination khi thiếu dữ liệu}: câu hỏi về chỉ tiêu ngành AI bị trả nhầm sang Olympic AI. Đã thêm cơ chế ``Không có thông tin trong corpus.''.
   \item \textbf{Qwen CPU quá chậm}: Qwen chạy được nhưng tốc độ sinh token trên CPU rất thấp. Vì vậy hệ thống dùng hybrid reader để bảo đảm thực dụng.
 \end{itemize}

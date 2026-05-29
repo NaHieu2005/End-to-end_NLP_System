@@ -12,7 +12,9 @@ Retrieval Augmented Generation (RAG) project for factual question answering over
 - `data/uet_vnu/documents.jsonl` and `data/uet_vnu/metadata.json`: crawled document metadata.
 - `data/train/questions.txt` and `data/train/reference_answers.txt`: training/development QA set.
 - `data/test/questions.txt` and `data/test/reference_answers.txt`: annotated test QA set.
-- `system_outputs/system_output_1.txt`: generated answers for the test questions.
+- `system_outputs/system_output_1.txt`: final hybrid RAG answers for the test questions.
+- `system_outputs/system_output_2.txt`: retrieval-only baseline answers.
+- `system_outputs/system_output_3.txt`: direct/closed-book baseline answers.
 
 ## Data
 
@@ -79,6 +81,13 @@ python scripts/run_rag.py ^
   --extractive
 ```
 
+Run the two baselines used in the report:
+
+```powershell
+python scripts/run_retrieval_baseline.py --questions data/test/questions.txt --index data/processed/index.pkl --out system_outputs/system_output_2.txt --top-k 5
+python scripts/run_direct_baseline.py --questions data/test/questions.txt --out system_outputs/system_output_3.txt
+```
+
 Interactive single-question mode:
 
 ```bash
@@ -108,6 +117,17 @@ python scripts/evaluate.py ^
 Latest local evaluation on the annotated test set:
 
 ```text
+Retrieval-only baseline:
+exact_match: 0.0152
+f1: 0.1266
+answer_recall: 0.1818
+
+Direct/closed-book baseline:
+exact_match: 0.8636
+f1: 0.8970
+answer_recall: 0.9091
+
+Final hybrid RAG:
 exact_match: 0.9242
 f1: 0.9576
 answer_recall: 0.9697
