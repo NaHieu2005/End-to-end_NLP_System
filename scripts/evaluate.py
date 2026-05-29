@@ -16,7 +16,9 @@ def main() -> None:
     parser.add_argument("--references", default="data/test/reference_answers.txt")
     args = parser.parse_args()
 
-    metrics = evaluate(read_lines(args.predictions), read_lines(args.references))
+    preds = [line.strip() for line in Path(args.predictions).read_text(encoding="utf-8").splitlines()]
+    refs = [line.strip() for line in Path(args.references).read_text(encoding="utf-8").splitlines()]
+    metrics = evaluate(preds, refs)
     for name, value in metrics.items():
         print(f"{name}: {value:.4f}")
 

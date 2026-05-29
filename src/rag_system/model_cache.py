@@ -15,9 +15,11 @@ def configure_hf_cache(cache_dir: str | Path | None = None) -> Path:
     target.mkdir(parents=True, exist_ok=True)
 
     # Set before loading Hugging Face libraries so model weights stay on drive F.
-    os.environ.setdefault("HF_HOME", str(target))
-    os.environ.setdefault("HF_HUB_CACHE", str(target / "hub"))
-    os.environ.setdefault("SENTENCE_TRANSFORMERS_HOME", str(target / "sentence_transformers"))
+    os.environ["HF_HOME"] = str(target)
+    os.environ["HF_HUB_CACHE"] = str(target / "hub")
+    os.environ["SENTENCE_TRANSFORMERS_HOME"] = str(target / "sentence_transformers")
+    os.environ["TRITON_CACHE_DIR"] = str(target / "triton")
+    os.environ["PIP_CACHE_DIR"] = str(target / "pip")
     return target
 
 

@@ -2,6 +2,13 @@ beautifulsoup4>=4.12.0
 numpy>=1.24.0
 pypdf>=4.0.0
 scikit-learn>=1.3.0
-sentence-transformers>=2.7.0
-torch>=2.1.0
+
+# Generative RAG reader (Qwen). Torch 2.5.1+cpu is used because newer CPU
+# wheels caused Windows DLL initialization failures on the test machine.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.5.1+cpu
 transformers>=4.40.0,<5.0.0
+accelerate>=0.26.0
+
+# Dense retrieval & reranker (optional, TF-IDF fallback available)
+sentence-transformers>=2.7.0

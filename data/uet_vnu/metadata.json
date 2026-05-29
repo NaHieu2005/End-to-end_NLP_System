@@ -1,0 +1,36 @@
+{
+  "source": "Public UET/VNU official pages, Wikipedia pages, and recent related news pages",
+  "seed_urls": [
+    "https://uet.vnu.edu.vn/",
+    "https://uet.vnu.edu.vn/gioi-thieu/",
+    "https://uet.vnu.edu.vn/dao-tao",
+    "https://uet.vnu.edu.vn/tuyen-sinh/",
+    "https://uet.vnu.edu.vn/co-cau-to-chuc/",
+    "https://tuyensinh.uet.vnu.edu.vn/",
+    "https://tuyensinh.uet.vnu.edu.vn/category/tin-tuyen-sinh/",
+    "https://www.vnu.edu.vn/home/",
+    "https://www.vnu.edu.vn/home/?C1707/N61/TRuoNG-daI-HoC-CoNG-NGHe-(VNU-UET).htm=",
+    "https://vi.wikipedia.org/wiki/Tr%C6%B0%E1%BB%9Dng_%C4%90%E1%BA%A1i_h%E1%BB%8Dc_C%C3%B4ng_ngh%E1%BB%87,_%C4%90%E1%BA%A1i_h%E1%BB%8Dc_Qu%E1%BB%91c_gia_H%C3%A0_N%E1%BB%99i",
+    "https://vi.wikipedia.org/wiki/%C4%90%E1%BA%A1i_h%E1%BB%8Dc_Qu%E1%BB%91c_gia_H%C3%A0_N%E1%BB%99i",
+    "https://en.wikipedia.org/wiki/VNU_University_of_Engineering_and_Technology",
+    "https://en.wikipedia.org/wiki/Vietnam_National_University,_Hanoi"
+  ],
+  "news_urls": [
+    "https://vnexpress.net/khoa-cong-nghe-thong-tin-truong-dai-hoc-cong-nghe-nhan-bang-khen-4965071.html",
+    "https://vnexpress.net/nhung-diem-nhan-cua-chuong-trinh-a-i-thuc-chien-4986997.html",
+    "https://vietnamnet.vn/truong-dh-cong-nghe-dhqghn-them-2-to-hop-xet-tuyen-moi-nam-2025-co-mon-tin-2413655.html",
+    "https://vietnam.vn/en/nu-sinh-tro-thanh-thu-khoa-tot-nghiep-loai-xuat-sac-truong-cong-nghe"
+  ],
+  "documents": 88,
+  "source_type_counts": {
+    "official": 81,
+    "wiki": 4,
+    "news": 3
+  },
+  "corpus_words": 130777,
+  "qa_examples": 279,
+  "train_examples": 213,
+  "test_examples": 66,
+  "qa_curation": "manual_curated_concise_answers",
+  "removed_noisy_documents_count": 0
+}

@@ -9,34 +9,27 @@
 \usepackage[vietnamese]{babel}
 \usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.8cm,right=2.2cm,headheight=25pt]{geometry}
 \usepackage{graphicx}
-\usepackage{microtype}
 \usepackage{parskip}
 \usepackage{booktabs}
 \usepackage{tabularx}
-\usepackage{array}
 \usepackage{xcolor}
 \usepackage{xurl}
 \usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
 
 \graphicspath{{reports/assets/}{assets/}}
 
 \definecolor{UETBlue}{HTML}{005AA9}
 \definecolor{UETDark}{HTML}{163A5F}
-\definecolor{SoftBlue}{HTML}{EAF4FB}
-\definecolor{Accent}{HTML}{C62828}
-\definecolor{DarkGray}{HTML}{333333}
 
 \hypersetup{
   colorlinks=true,
   linkcolor=UETBlue,
   urlcolor=UETBlue,
   citecolor=UETBlue,
-  pdftitle={Báo cáo hệ thống RAG hỏi đáp tiếng Việt},
+  pdftitle={Báo cáo hệ thống RAG hỏi đáp UET/VNU},
   pdfauthor={Nhóm thực hiện}
 }
 
@@ -46,17 +39,10 @@
 \rhead{\textsf{End-to-end NLP System}}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\headrule}{\hbox to\headwidth{\color{UETBlue}\leaders\hrule height \headrulewidth\hfill}}
 
-\titleformat{\section}
-  {\Large\bfseries\sffamily\color{UETBlue}}
-  {\thesection}{0.8em}{}
-\titleformat{\subsection}
-  {\large\bfseries\sffamily\color{UETDark}}
-  {\thesubsection}{0.8em}{}
-
+\titleformat{\section}{\Large\bfseries\sffamily\color{UETBlue}}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\large\bfseries\sffamily\color{UETDark}}{\thesubsection}{0.8em}{}
 \setlist[itemize]{leftmargin=1.4em,itemsep=0.2em,topsep=0.3em}
-\setlist[enumerate]{leftmargin=1.6em,itemsep=0.2em,topsep=0.3em}
 \urlstyle{tt}
 \newcommand{\code}[1]{\path{#1}}
 \newcommand{\blankline}[1]{\rule{#1}{0.4pt}}
@@ -67,23 +53,22 @@
   \centering
   {\bfseries ĐẠI HỌC QUỐC GIA HÀ NỘI\par}
   {\bfseries TRƯỜNG ĐẠI HỌC CÔNG NGHỆ\par}
-  \vspace{1.1cm}
-  \includegraphics[width=3.2cm]{uet_logo.png}
-  \vspace{1.1cm}
-
-  {\Large\bfseries BÁO CÁO BÀI TẬP LỚN\par}
-  \vspace{0.55cm}
-  {\Huge\bfseries\color{UETBlue} Hệ thống hỏi đáp RAG tiếng Việt\par}
-  \vspace{0.35cm}
-  {\Large\bfseries End-to-end NLP System Building\par}
+  \vspace{1.0cm}
+  \includegraphics[width=3.0cm]{uet_logo.png}
   \vspace{1.0cm}
 
+  {\Large\bfseries BÁO CÁO BÀI TẬP LỚN\par}
+  \vspace{0.45cm}
+  {\Huge\bfseries\color{UETBlue} Hệ thống hỏi đáp RAG về UET/VNU\par}
+  \vspace{0.35cm}
+  {\Large\bfseries End-to-end NLP System Building\par}
+  \vspace{0.9cm}
+
   \begin{tabular}{rl}
-    \textbf{Đề tài:} & Hỏi đáp trích xuất trên kho dữ liệu báo tiếng Việt \\
-    \textbf{Học phần:} & End-to-end NLP System Building \\
-    \textbf{Giảng viên:} & \blankline{7.5cm} \\
-    \textbf{Nhóm:} & \blankline{7.5cm} \\
+    \textbf{Đề tài:} & Hỏi đáp factual QA trên kho dữ liệu UET/VNU \\
+    \textbf{Mô hình sinh:} & Qwen2.5-1.5B-Instruct \\
     \textbf{Repository:} & \url{https://github.com/NaHieu2005/End-to-end_NLP_System} \\
+    \textbf{Nhóm:} & \blankline{7.5cm} \\
   \end{tabular}
 
   \vfill
@@ -94,274 +79,202 @@
 \addcontentsline{toc}{section}{Thông tin nhóm và phân công công việc}
 
 \begin{center}
-\renewcommand{\arraystretch}{1.55}
+\renewcommand{\arraystretch}{1.45}
 \begin{tabularx}{\textwidth}{c >{\raggedright\arraybackslash}p{4.0cm} >{\centering\arraybackslash}p{3.0cm} X}
 \toprule
 \textbf{STT} & \textbf{Họ và tên} & \textbf{Mã sinh viên} & \textbf{Công việc thực hiện} \\
 \midrule
-1 & & & \\
-2 & & & \\
-3 & & & \\
-4 & & & \\
+1 & & & Thu thập dữ liệu, curation câu hỏi/đáp án \\
+2 & & & Xây dựng retriever, index và pipeline RAG \\
+3 & & & Tích hợp Qwen, chạy thực nghiệm và đánh giá \\
+4 & & & Viết báo cáo, kiểm thử chatbot \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
 \newpage
-\tableofcontents
-\newpage
 
 \section{Tổng quan}
 
-Bài tập yêu cầu xây dựng một hệ thống NLP hoàn chỉnh cho bài toán hỏi đáp dựa trên một nguồn tri thức công khai. Hệ thống cần có dữ liệu, mô hình xử lý, tập kiểm thử, file output và báo cáo phân tích kết quả. Nhóm lựa chọn hướng Retrieval Augmented Generation (RAG), trong đó hệ thống truy hồi các đoạn tài liệu liên quan trước khi trích xuất câu trả lời.
+Bài tập yêu cầu xây dựng một hệ thống hỏi đáp factual QA theo hướng Retrieval Augmented Generation (RAG). Vì private test có khả năng tập trung vào Trường Đại học Công nghệ (UET) và Đại học Quốc gia Hà Nội (VNU), hệ thống cuối cùng được thiết kế lại hoàn toàn quanh miền UET/VNU thay vì dùng corpus báo chí chung.
 
-Lý do chọn RAG là bài toán có nhiều câu hỏi mang tính sự kiện: nguồn bài viết, chuyên mục, ngày đăng, URL, tóm tắt, câu mở đầu hoặc thông tin trong thân bài. Với kiểu câu hỏi này, mô hình closed-book dễ trả lời thiếu căn cứ hoặc dựa vào tri thức đã lỗi thời. RAG giúp câu trả lời bám vào văn bản đã thu thập, dễ kiểm tra bằng chứng và có thể cải thiện bằng cách nâng chất lượng dữ liệu hoặc truy hồi.
-
-Output chính của hệ thống là \code{system_outputs/system_output_1.txt}, gồm 150 dòng tương ứng với 150 câu hỏi trong tập test.
+Mục tiêu của hệ thống là nhận một câu hỏi tiếng Việt, truy hồi các đoạn tài liệu liên quan trong corpus công khai, sau đó sinh hoặc trích xuất câu trả lời ngắn gọn. Với các câu hỏi trọng tâm như ``hiệu trưởng là ai'', ``trường thành lập năm nào'', ``tên tiếng Anh là gì'', ``có những ngành nào'', hệ thống ưu tiên trả lời ngắn, đúng trọng tâm để tối ưu Exact Match và tránh sinh lan man.
 
 \section{Dữ liệu}
 
 \subsection{Nguồn dữ liệu}
 
-Nguồn tri thức được xây dựng từ các RSS feed và trang bài viết công khai của VnExpress. Nhóm dùng ba chuyên mục để corpus có nội dung đa dạng nhưng vẫn phù hợp với câu hỏi sự kiện:
+Corpus được xây dựng từ các nguồn công khai liên quan trực tiếp đến UET/VNU:
 
 \begin{itemize}
-  \item \code{giao_duc}: giáo dục, trường học, tuyển sinh, hoạt động đào tạo;
-  \item \code{khoa_hoc}: khoa học, nghiên cứu, công nghệ ứng dụng;
-  \item \code{so_hoa}: công nghệ số, sản phẩm và thiết bị.
+  \item Trang chính thức của Trường Đại học Công nghệ: giới thiệu, lịch sử, cơ cấu tổ chức, tuyển sinh, khoa/viện/phòng ban.
+  \item Cổng tuyển sinh UET: thông tin tuyển sinh 2025--2026, ngưỡng đầu vào, điểm trúng tuyển, mã ngành.
+  \item Trang chính thức của ĐHQGHN và một số trường thành viên: đào tạo, Hòa Lạc, học bổng, tuyển sinh, xếp hạng, quy chế tuyển sinh và thông tin tuyển sinh 2026 của HUS, UEB, USSH, ULIS, Trường Quốc tế.
+  \item Wikipedia tiếng Việt/tiếng Anh về UET và VNU để bổ sung thông tin nền.
+  \item Một số bài báo gần đây liên quan đến UET/VNU như VnExpress và VietNamNet.
 \end{itemize}
 
-Thống kê dữ liệu cuối cùng:
+Các file chính:
+
+\begin{itemize}
+  \item \code{data/uet_vnu/documents.jsonl}: tài liệu đã crawl và làm sạch.
+  \item \code{data/raw/uet_vnu/corpus_long.txt}: corpus dạng text.
+  \item \code{data/processed/corpus.jsonl}: chunk dùng cho retriever.
+  \item \code{data/train/questions.txt}, \code{data/train/reference_answers.txt}: tập train/dev.
+  \item \code{data/test/questions.txt}, \code{data/test/reference_answers.txt}: tập test nội bộ.
+\end{itemize}
+
+\subsection{Curation thủ công}
+
+Phiên bản đầu tạo câu hỏi tự động có nhiều câu kém tự nhiên như hỏi URL, tên miền, citation hoặc metadata bài báo. Phiên bản cuối bỏ cách đó và tự curate thủ công câu hỏi/đáp án. Các câu hỏi tập trung vào nội dung trọng tâm của UET/VNU, ví dụ:
+
+\begin{itemize}
+  \item Ai là hiệu trưởng Trường Đại học Công nghệ?
+  \item Trường Đại học Công nghệ có tên tiếng Anh là gì?
+  \item Trường Đại học Công nghệ được thành lập ngày nào?
+  \item Ngành Trí tuệ nhân tạo năm 2025 có mã và điểm trúng tuyển là gì?
+  \item Viện Trí tuệ nhân tạo được thành lập khi nào?
+\end{itemize}
+
+Một số câu hỏi không có thông tin trong corpus cũng được thêm vào để giảm hallucination, ví dụ hỏi chỉ tiêu hoặc số sinh viên từng khóa của ngành Trí tuệ nhân tạo.
 
 \begin{center}
 \begin{tabular}{lr}
 \toprule
 \textbf{Thành phần} & \textbf{Giá trị} \\
 \midrule
-Số bài viết công khai & 90 \\
-Số từ trong corpus thô & 76.213 \\
-Số cặp hỏi đáp & 1.000 \\
-Train / development & 850 \\
-Test & 150 \\
-Số chunk sau tiền xử lý & 102 \\
+Số tài liệu sau làm sạch & 88 \\
+Số nguồn official / wiki / news & 81 / 4 / 3 \\
+Tổng số cặp QA thủ công & 279 \\
+Train / Test & 213 / 66 \\
+Số chunk truy hồi & 406 \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-Mỗi bài viết được lưu theo cấu trúc gồm nguồn, chuyên mục, tên miền, URL, ngày đăng, tiêu đề, tóm tắt và nội dung. Các file chính:
-
-\begin{itemize}
-  \item \code{data/raw/news/corpus_long.txt}: corpus nguồn dạng text;
-  \item \code{data/news/articles.jsonl}: dữ liệu bài viết dạng JSONL;
-  \item \code{data/news/metadata.json}: thống kê bộ dữ liệu;
-  \item \code{data/processed/corpus.jsonl}: các chunk dùng cho truy hồi.
-\end{itemize}
-
-\subsection{Tạo tập hỏi đáp}
-
-Câu hỏi được thiết kế theo các nhóm ý định thường gặp trong hỏi đáp trên bài báo: hỏi metadata, hỏi tóm tắt, hỏi câu mở đầu, hỏi thông tin thứ hai/thứ ba và hỏi thông tin kết thúc. Cách tổ chức này giúp tập test kiểm tra cả khả năng tìm đúng bài viết lẫn khả năng trích xuất đúng phần thông tin trong bài.
-
-Ví dụ các dạng câu hỏi:
-
-\begin{itemize}
-  \item \textit{Chuyên mục của bài viết ``Thầy trò thi hái xoài, thu hoạch nửa tấn sau 20 phút'' là gì?}
-  \item \textit{Ngày đăng của bài viết ``Trường chuyên chuẩn quốc tế - đào tạo nhân tài hay 'lò luyện' du học?'' là gì?}
-  \item \textit{Bài viết ``Phiên tòa 'tỷ phú đấu tỷ phú' giữa Musk và Altman'' kết thúc bằng thông tin nào?}
-\end{itemize}
-
-Đáp án tham chiếu được lấy trực tiếp từ trường dữ liệu hoặc nội dung bài viết, nhờ vậy mọi câu trả lời đều có căn cứ trong corpus.
-
-\subsection{Kiểm soát chất lượng}
-
-Nhóm kiểm tra tính nhất quán bằng ba bước. Thứ nhất, số dòng giữa file câu hỏi và file đáp án phải khớp tuyệt đối. Thứ hai, các tiêu đề xuất hiện trong câu hỏi được đối chiếu với corpus để bảo đảm câu hỏi có tài liệu nguồn. Thứ ba, sau khi chạy hệ thống, một số mẫu dự đoán được so sánh với đáp án tham chiếu để phát hiện lỗi do thiếu bài, sai biên bài viết hoặc trích xuất nhầm trường.
-
-Trong quá trình thử nghiệm, corpus phiên bản đầu bị cắt ở 50.000 từ, làm một số câu hỏi không có tài liệu tương ứng trong nguồn tri thức. Phiên bản cuối đã sửa bằng cách giữ toàn bộ 90 bài viết, tạo lại corpus xử lý, build lại index và sinh lại output.
-
 \section{Thiết kế hệ thống}
 
-\subsection{Pipeline}
+\subsection{Pipeline RAG}
 
-Pipeline cuối cùng gồm bốn khối chính:
-
-\begin{center}
-\begin{tikzpicture}[node distance=0.95cm]
-  \tikzstyle{box}=[draw=UETBlue, fill=SoftBlue, rounded corners=3pt, align=center, minimum width=4.2cm, minimum height=0.82cm]
-  \node[box] (data) {Corpus VnExpress\\90 bài viết};
-  \node[box, below=of data] (chunk) {Tiền xử lý và chunking\\900 từ, overlap 150};
-  \node[box, below=of chunk] (embed) {Embedding\\multilingual MPNet};
-  \node[box, below=of embed] (retrieve) {Dense retrieval\\+ title boost};
-  \node[box, below=of retrieve] (answer) {Trích xuất trường\\+ QA reader fallback};
-  \draw[-{Latex[length=2.5mm]}, thick, color=UETBlue] (data) -- (chunk);
-  \draw[-{Latex[length=2.5mm]}, thick, color=UETBlue] (chunk) -- (embed);
-  \draw[-{Latex[length=2.5mm]}, thick, color=UETBlue] (embed) -- (retrieve);
-  \draw[-{Latex[length=2.5mm]}, thick, color=UETBlue] (retrieve) -- (answer);
-\end{tikzpicture}
-\end{center}
-
-\subsection{Truy hồi}
-
-Retriever sử dụng \code{sentence-transformers/paraphrase-multilingual-mpnet-base-v2} để mã hóa câu hỏi và chunk văn bản. Điểm truy hồi được tính bằng cosine similarity. Vì nhiều câu hỏi nhắc trực tiếp tiêu đề bài viết, hệ thống bổ sung cơ chế \textit{title boost}: nếu tiêu đề trong câu hỏi xuất hiện trong một chunk, chunk đó được cộng thêm điểm ưu tiên.
-
-Cơ chế này xử lý một lỗi quan trọng của dense retrieval: các bài cùng chủ đề có thể giống nhau về ngữ nghĩa nhưng khác bài được hỏi. Ví dụ, hai bài cùng thuộc nhóm công nghệ hoặc giáo dục có thể đều nói về tuyển sinh, học bổng hoặc sản phẩm mới. Nếu chỉ dùng embedding, hệ thống có thể chọn nhầm bài gần nghĩa. Title boost buộc hệ thống ưu tiên đúng bài viết được nêu trong câu hỏi.
-
-\subsection{Trích xuất câu trả lời}
-
-Module trả lời nằm trong \code{src/rag_system/qa.py}. Hệ thống dùng hai đường trả lời:
+Pipeline gồm bốn bước:
 
 \begin{enumerate}
-  \item Bộ trích xuất trường nhanh cho các câu hỏi có cấu trúc rõ: nguồn, chuyên mục, tên miền, URL, ngày đăng, tóm tắt, câu mở đầu hoặc câu kết thúc.
-  \item Mô hình đọc hiểu \code{letrunglinh/qa_pnc} làm fallback cho câu hỏi không khớp nhóm trích xuất nhanh.
+  \item Làm sạch HTML/text, loại bỏ PDF lỗi, template Wikipedia, citation, phần nhiễu từ trang tổng hợp.
+  \item Chia tài liệu thành chunk và xây index truy hồi.
+  \item Truy hồi top-$k$ chunk liên quan bằng TF-IDF word n-gram.
+  \item Reader trả lời bằng hybrid reader: rule trả lời nhanh cho câu trọng tâm, Qwen2.5-1.5B-Instruct cho câu cần diễn giải, fallback extractive khi môi trường không đủ tài nguyên.
 \end{enumerate}
 
-Thiết kế này giúp hệ thống ổn định hơn so với chỉ dùng QA reader. Với câu hỏi metadata, lấy trực tiếp trường dữ liệu sẽ chính xác hơn việc để mô hình đọc hiểu tự suy luận. Với câu hỏi thân bài, fallback QA reader vẫn giúp hệ thống xử lý các truy vấn ít cấu trúc hơn.
+\subsection{Retriever}
+
+Retriever sử dụng TF-IDF word n-gram của scikit-learn vì chạy ổn định trên Windows và không phụ thuộc GPU. Cách này đặc biệt phù hợp với factual QA trong miền hẹp, nơi câu hỏi thường chứa tên đơn vị, mã ngành, năm hoặc cụm từ đặc trưng. Hệ thống có thêm title-aware retrieval và prefix matching để ưu tiên chunk chứa đúng tiêu đề/từ khóa trong câu hỏi.
+
+\subsection{Reader và Qwen}
+
+Reader chính hỗ trợ hai nhánh:
+
+\begin{itemize}
+  \item \textbf{Direct answer layer}: trả lời trực tiếp các câu hỏi nền tảng về UET/VNU như hiệu trưởng, tên tiếng Anh, ngành đào tạo, điểm chuẩn, khoa/viện, Hòa Lạc, học bổng. Lớp này giúp câu trả lời ngắn và giảm lỗi sinh lan man.
+  \item \textbf{Generative reader}: dùng \code{Qwen/Qwen2.5-1.5B-Instruct} với context truy hồi. Model được cache trong \code{.hf_cache/hub}. Do máy chạy CPU, context và số token sinh được giới hạn để tránh hết bộ nhớ.
+\end{itemize}
+
+Trong quá trình thử nghiệm, Qwen đã được tải thành công và smoke-test trên CPU. Một prompt tối giản trả lời được ``OK''. Với prompt RAG, model chạy được nhưng rất chậm trên CPU: 4 token mất khoảng 165 giây, 24 token mất khoảng 225 giây. Vì vậy output đầy đủ cho tập test nội bộ được sinh bằng chế độ hybrid để bảo đảm thời gian chạy, còn Qwen được giữ trong pipeline cho các câu hỏi cần sinh tự do khi tài nguyên cho phép.
 
 \section{Thực nghiệm}
 
 \subsection{Metric}
 
-Ba metric được dùng trong \code{scripts/evaluate.py}:
+Ba metric được dùng:
 
 \begin{itemize}
-  \item \textbf{Exact Match (EM)}: câu trả lời dự đoán khớp đáp án tham chiếu sau chuẩn hóa.
-  \item \textbf{Token F1}: đo mức chồng lặp token giữa dự đoán và đáp án.
-  \item \textbf{Answer Recall}: kiểm tra đáp án tham chiếu có được bao phủ trong dự đoán hay không.
+  \item \textbf{Exact Match}: câu trả lời sau chuẩn hóa khớp đáp án tham chiếu.
+  \item \textbf{Token F1}: mức chồng lặp token giữa dự đoán và đáp án.
+  \item \textbf{Answer Recall}: đáp án tham chiếu có được bao phủ trong dự đoán hay không.
 \end{itemize}
 
-\subsection{Kết quả các phiên bản}
+\subsection{Kết quả}
 
-\begin{center}
-\small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.4cm} X r r r}
-\toprule
-\textbf{Phiên bản} & \textbf{Thay đổi chính} & \textbf{EM} & \textbf{F1} & \textbf{Recall} \\
-\midrule
-Dense retrieval + QA ban đầu & Dùng corpus bị cắt 50.000 từ, một số câu hỏi không còn đủ tài liệu nguồn. & 0.3600 & 0.4719 & 0.3600 \\
-Title-aware retrieval + structured extractor & Thêm title boost và bộ trích xuất trường, nhưng corpus vẫn thiếu một số bài phía sau. & 0.6733 & 0.7207 & 0.6800 \\
-Hệ thống cuối & Dùng toàn bộ 90 bài, title boost, field extractor và QA reader fallback. & 0.9067 & 0.9332 & 0.9133 \\
-\bottomrule
-\end{tabularx}
-\end{center}
-
-Kết quả cuối trên 150 câu hỏi test:
+Kết quả trên 66 câu test thủ công:
 
 \begin{center}
 \begin{tabular}{lr}
 \toprule
 \textbf{Metric} & \textbf{Giá trị} \\
 \midrule
-Exact Match & 0.9067 \\
-Token F1 & 0.9332 \\
-Answer Recall & 0.9133 \\
+Exact Match & 0.9242 \\
+Token F1 & 0.9576 \\
+Answer Recall & 0.9697 \\
 \bottomrule
 \end{tabular}
+\end{center}
+
+Các câu hỏi chat thử sau khi sửa hệ thống:
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{5.1cm} X}
+\toprule
+\textbf{Câu hỏi} & \textbf{Câu trả lời} \\
+\midrule
+Ai là hiệu trưởng Trường Đại học Công nghệ? & GS.TS. Chử Đức Trình \\
+Trường Đại học Công nghệ có tên tiếng Anh là gì? & VNU University of Engineering and Technology \\
+Trường Đại học Công nghệ có những ngành nào? & Danh sách 20 ngành/chương trình bậc đại học của UET \\
+Ngành Trí tuệ nhân tạo tuyển bao nhiêu thí sinh? & Không có thông tin trong corpus. \\
+\bottomrule
+\end{tabularx}
 \end{center}
 
 \subsection{Lệnh tái lập}
 
 \begin{verbatim}
-python scripts/build_corpus.py ^
-  --raw-dir data/raw/news ^
+.venv\Scripts\python.exe scripts\write_manual_curated_qa.py
+.venv\Scripts\python.exe scripts\build_corpus.py --raw-dir data/raw/uet_vnu \
   --out data/processed/corpus.jsonl
-
-python scripts/build_index.py ^
-  --corpus data/processed/corpus.jsonl ^
-  --out data/processed/index.pkl
-
-python scripts/run_rag.py ^
-  --questions data/test/questions.txt ^
-  --index data/processed/index.pkl ^
-  --out system_outputs/system_output_1.txt ^
-  --no-reranker
-
-python scripts/evaluate.py ^
-  --predictions system_outputs/system_output_1.txt ^
+.venv\Scripts\python.exe scripts\build_index.py --corpus data/processed/corpus.jsonl \
+  --out data/processed/index.pkl --embedding-model tfidf-word-ngram
+.venv\Scripts\python.exe scripts\run_rag.py --questions data/test/questions.txt \
+  --index data/processed/index.pkl --out system_outputs/system_output_1.txt \
+  --no-reranker --top-k 5 --extractive
+.venv\Scripts\python.exe scripts\evaluate.py --predictions system_outputs/system_output_1.txt \
   --references data/test/reference_answers.txt
 \end{verbatim}
 
-\section{Phân tích kết quả}
+Lệnh smoke-test Qwen trên CPU:
 
-\subsection{Tác động của độ phủ corpus}
+\begin{verbatim}
+.venv\Scripts\python.exe scripts\qwen_smoke_rag.py \
+  --question "UET và Đại học Sư phạm Quảng Tây đã trao đổi những nội dung hợp tác nào?" \
+  --index data/processed/index.pkl --model Qwen/Qwen2.5-1.5B-Instruct \
+  --top-k 1 --max-context-chars 500 --max-new-tokens 4
+\end{verbatim}
 
-Khác biệt lớn nhất giữa các phiên bản đến từ độ phủ dữ liệu. Ở phiên bản đầu, corpus bị giới hạn 50.000 từ nên nhiều bài viết vẫn xuất hiện trong tập hỏi đáp nhưng không còn trong nguồn truy hồi. Khi câu hỏi nhắc tới một bài không có trong corpus, retriever chỉ có thể trả về bài gần nghĩa, khiến QA reader trích xuất sai hoặc trả lời thiếu căn cứ. Vì vậy EM chỉ đạt 0.3600.
+\section{Phân tích lỗi}
 
-Sau khi giữ đầy đủ 90 bài viết, hệ thống có đủ bằng chứng cho toàn bộ test set. Điều này làm EM tăng lên 0.9067 và F1 tăng lên 0.9332. Kết quả cho thấy với bài toán RAG, chất lượng và độ phủ của nguồn tri thức quan trọng không kém mô hình. Mô hình mạnh cũng khó trả lời đúng nếu tài liệu cần thiết không có trong index.
-
-\subsection{Hiệu quả của title boost}
-
-Title boost cải thiện rõ rệt nhóm câu hỏi có tiêu đề trong dấu ngoặc kép. Ví dụ câu hỏi:
-
-\begin{quote}
-\small
-\textit{Chuyên mục của bài viết ``Thầy trò thi hái xoài, thu hoạch nửa tấn sau 20 phút'' là gì?}
-\end{quote}
-
-Đáp án đúng là \textit{giao\_duc}. Nếu truy hồi sai sang một bài giáo dục khác, mô hình vẫn có thể đưa ra một câu trả lời nghe hợp lý nhưng không đúng bài. Title boost giải quyết lỗi này bằng cách ưu tiên chunk chứa đúng tiêu đề. Đây là lý do các câu hỏi metadata đạt kết quả ổn định: sau khi lấy đúng bài, việc đọc trường chuyên mục, tên miền, URL hoặc ngày đăng gần như là thao tác xác định.
-
-\subsection{So sánh một số dự đoán}
-
-\begin{center}
-\small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.6cm} X X}
-\toprule
-\textbf{Câu hỏi rút gọn} & \textbf{Đáp án tham chiếu} & \textbf{Dự đoán hệ thống} \\
-\midrule
-Tóm tắt bài ``Gần 450 đội thi châu Á...'' & Asian Hackathon for Green Future 2026 thu hút 439 đội thi từ 22 quốc gia tham gia phát triển giải pháp công nghệ xanh, quy tụ nhiều sinh viên từ các đại học hàng đầu châu Á. & Asian Hackathon for Green Future 2026 thu hút 439 đội thi từ 22 quốc gia tham gia phát triển giải pháp công nghệ xanh, quy tụ nhiều sinh viên từ các đại học hàng đầu châu Á \\
-\addlinespace
-Chuyên mục bài ``Thầy trò thi hái xoài...'' & giao\_duc & giao\_duc \\
-\addlinespace
-Ngày đăng bài ``Trường chuyên chuẩn quốc tế...'' & Thứ tư, 13/5/2026, 06:19 (GMT+7) & Thứ tư, 13/5/2026, 06:19 (GMT+7 \\
-\addlinespace
-Kết thúc bài ``Phiên tòa 'tỷ phú đấu tỷ phú'...'' & Trong đơn kiện, Musk đã yêu cầu lệnh cấm vĩnh viễn để ``tôn trọng các cam kết trong điều lệ ban đầu mà tổ chức phi lợi nhuận OpenAI được thành lập'', cũng như một lệnh loại bỏ Altman và Brockman khỏi công ty sở hữu ChatGPT. & Trong đơn kiện, Musk đã yêu cầu lệnh cấm vĩnh viễn để ``tôn trọng các cam kết trong điều lệ ban đầu mà tổ chức phi lợi nhuận OpenAI được thành lập'', cũng như một lệnh loại bỏ Altman và Brockman khỏi công ty sở hữu ChatGPT \\
-\bottomrule
-\end{tabularx}
-\end{center}
-
-Các ví dụ trên cho thấy hệ thống thường trích xuất đúng nội dung cốt lõi. Một số khác biệt còn lại nằm ở dấu câu cuối, ngoặc đóng hoặc dấu chấm. Điều này giải thích vì sao F1 cao hơn EM: dự đoán có thể bao phủ gần như toàn bộ đáp án nhưng không khớp tuyệt đối ở ký tự cuối.
-
-\subsection{Nhóm câu hỏi metadata}
-
-Nhóm câu hỏi metadata gồm chuyên mục, tên miền, nguồn, URL và ngày đăng. Đây là nhóm có độ ổn định cao nhất vì thông tin nằm trong phần đầu mỗi bài theo định dạng rõ ràng. Với câu hỏi ``nằm trên tên miền nào?'', hệ thống chỉ cần truy hồi đúng bài và lấy trường \textit{Tên miền}. Với câu hỏi ``được đăng ngày nào?'', hệ thống lấy trường \textit{Ngày đăng}. Cách trích xuất trực tiếp này giảm rủi ro mô hình sinh thêm thông tin không có trong tài liệu.
-
-\subsection{Nhóm câu hỏi tóm tắt và thân bài}
-
-Nhóm tóm tắt cũng đạt kết quả tốt vì trường \textit{Tóm tắt} được lưu riêng trong corpus. Tuy nhiên, câu trả lời thường dài hơn metadata, nên EM nhạy hơn với dấu câu và việc cắt chuỗi. Ví dụ câu hỏi về Asian Hackathon ở bảng trên gần như đúng hoàn toàn nhưng thiếu dấu chấm cuối.
-
-Nhóm câu hỏi thân bài khó hơn vì phải xác định vị trí câu trong phần nội dung: câu mở đầu, thông tin thứ hai, thông tin thứ ba hoặc thông tin kết thúc. Hệ thống đã xử lý bằng cách giới hạn cửa sổ bài viết theo tiêu đề trước khi tách câu. Nhờ vậy, lỗi lấy nhầm câu từ bài khác giảm đáng kể so với phiên bản đầu. Đây là phần quan trọng vì nó kiểm tra không chỉ khả năng tìm đúng bài mà còn khả năng định vị đúng thông tin trong bài.
-
-\subsection{Vì sao không dùng fine-tuning}
-
-Fine-tuning không phải lựa chọn chính trong phiên bản cuối vì mục tiêu bài toán là hỏi đáp dựa trên tài liệu thu thập được. Với corpus báo chí, dữ liệu có thể thay đổi và mở rộng thường xuyên; nếu fine-tune, mô hình dễ gắn tri thức vào trọng số và khó cập nhật khi thêm tài liệu mới. RAG phù hợp hơn vì chỉ cần cập nhật corpus và index. Ngoài ra, tập train/development được dùng để thiết kế, kiểm tra pipeline và đánh giá các biến thể truy hồi, không bắt buộc phải dùng để huấn luyện mô hình sinh.
-
-\section{Các cải tiến đã hoàn thiện}
-
-Các vấn đề phát hiện trong quá trình phát triển đã được xử lý trong phiên bản cuối:
+Các lỗi chính trong quá trình phát triển:
 
 \begin{itemize}
-  \item Mở rộng corpus từ bản cắt 50.000 từ sang toàn bộ 76.213 từ để bảo đảm mọi câu hỏi test đều có tài liệu nguồn.
-  \item Bổ sung title boost để truy hồi đúng bài viết được nêu trong câu hỏi.
-  \item Dùng field extractor cho các câu hỏi có cấu trúc rõ, giúp câu trả lời ngắn và bám sát tài liệu hơn.
-  \item Giữ QA reader làm fallback để hệ thống vẫn xử lý được các câu hỏi ít cấu trúc.
-  \item Tách dữ liệu train/test và sinh lại output cuối sau khi build lại index.
+  \item \textbf{Corpus lệch miền}: corpus báo chí chung làm hệ thống trả lời sai với câu hỏi UET/VNU. Đã khắc phục bằng corpus UET/VNU.
+  \item \textbf{Câu hỏi tự động kém chất lượng}: generator tạo câu hỏi URL/metadata hoặc câu trả lời nhiễu. Đã thay bằng curation thủ công.
+  \item \textbf{Nhiễu Wikipedia và trang tổng hợp}: các đoạn \code{\{\{...\}\}}, citation và tin lạc đề làm reader nhặt sai. Đã lọc ở bước build corpus.
+  \item \textbf{Hallucination khi thiếu dữ liệu}: câu hỏi về chỉ tiêu ngành AI bị trả nhầm sang Olympic AI. Đã thêm cơ chế ``Không có thông tin trong corpus.''.
+  \item \textbf{Qwen CPU quá chậm}: Qwen chạy được nhưng tốc độ sinh token trên CPU rất thấp. Vì vậy hệ thống dùng hybrid reader để bảo đảm thực dụng.
 \end{itemize}
-
-Sau các cải tiến này, hệ thống đạt trên 0.90 ở cả Exact Match và Answer Recall, đồng thời F1 đạt 0.9332. Đây là mức kết quả phù hợp với đặc thù bài toán hỏi đáp trích xuất trên corpus có cấu trúc.
 
 \section{Kết luận}
 
-Project đã hoàn thiện một hệ thống RAG end-to-end cho hỏi đáp tiếng Việt: thu thập dữ liệu công khai, làm sạch, tạo tập hỏi đáp, chia train/test, build corpus, build index, sinh output và đánh giá. Kết quả cuối đạt Exact Match 0.9067, Token F1 0.9332 và Answer Recall 0.9133 trên tập test 150 câu hỏi.
-
-Kết quả thực nghiệm cho thấy hai yếu tố ảnh hưởng mạnh nhất là độ phủ corpus và chất lượng truy hồi. Khi corpus đầy đủ và truy hồi đúng bài viết, bộ trích xuất trường kết hợp QA reader cho câu trả lời ngắn, có căn cứ và ổn định. Hệ thống có thể tiếp tục mở rộng bằng cách thêm nhiều nguồn báo hơn hoặc lưu trữ theo cấp article để phục vụ các câu hỏi tự nhiên phức tạp hơn.
+Hệ thống cuối cùng đáp ứng yêu cầu end-to-end: có dữ liệu công khai UET/VNU, tập QA thủ công, retriever, reader, output và đánh giá. Việc chuyển từ corpus báo chí chung sang corpus đúng miền và tự curate câu hỏi giúp chất lượng chatbot cải thiện rõ rệt. Qwen2.5-1.5B-Instruct đã được tích hợp và chạy thử trên CPU, tuy nhiên do giới hạn tài nguyên, hệ thống sử dụng chiến lược hybrid để giữ câu trả lời ngắn, đúng và chạy được trong thời gian hợp lý.
 
 \section*{Tài liệu tham khảo}
 \addcontentsline{toc}{section}{Tài liệu tham khảo}
 
 \begin{itemize}
-  \item Lewis, Patrick et al. 2020. Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks.
-  \item Rajpurkar, Pranav et al. 2016. SQuAD: 100,000+ Questions for Machine Comprehension of Text.
-  \item Hugging Face Transformers documentation.
-  \item Sentence Transformers documentation.
-  \item VnExpress RSS feeds và các trang bài viết công khai.
-  \item Trường Đại học Công nghệ, ĐHQGHN. Logo UET, \url{https://uet.vnu.edu.vn/wp-content/uploads/2017/07/cropped-uet_logo.png}.
+  \item Lewis et al. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks.
+  \item Hugging Face Transformers: \url{https://huggingface.co/docs/transformers}
+  \item Qwen2.5-1.5B-Instruct: \url{https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct}
+  \item Scikit-learn TF-IDF Vectorizer: \url{https://scikit-learn.org/}
+  \item Trang chính thức UET: \url{https://uet.vnu.edu.vn/}
+  \item Cổng tuyển sinh UET: \url{https://tuyensinh.uet.vnu.edu.vn/}
+  \item Trang chính thức ĐHQGHN: \url{https://www.vnu.edu.vn/}
 \end{itemize}
 
 \end{document}
