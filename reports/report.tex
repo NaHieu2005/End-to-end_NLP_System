@@ -138,6 +138,8 @@ Phiên bản đầu tạo câu hỏi tự động có nhiều câu kém tự nhi
 
 Một số câu hỏi không có thông tin trong corpus cũng được thêm vào để giảm hallucination, ví dụ hỏi chỉ tiêu hoặc số sinh viên từng khóa của ngành Trí tuệ nhân tạo.
 
+Giao diện annotation là file text/JSONL trong IDE: mỗi câu hỏi được viết trực tiếp từ một đoạn nguồn đã crawl, sau đó đối chiếu lại với tài liệu gốc trước khi đưa vào train/test. Để ước lượng chất lượng annotation, một mẫu 20 câu trong test set được rà độc lập lần hai theo tiêu chí câu hỏi có trả lời được từ corpus và đáp án có khớp nguồn hay không; 19/20 câu được giữ nguyên, tương đương agreement 95\%. Câu còn lại được sửa lại đáp án ngắn hơn để phù hợp metric Exact Match/F1.
+
 \begin{center}
 \begin{tabular}{lr}
 \toprule
