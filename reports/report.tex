@@ -223,21 +223,7 @@ Hybrid RAG cuối & \textbf{0.9242} & \textbf{0.9576} & \textbf{0.9697} \\
 
 Theo nhóm câu hỏi, Hybrid RAG đạt EM 14/14 trên nhóm phân tích ban đầu, 40/40 trên UET core và 10/12 trên VNU-wide. Retrieval-only chỉ đúng 1/66 vì thường lấy đúng tài liệu nhưng trả cả câu dài hoặc nhầm số gần đó; direct/closed-book đạt 57/66 nhưng thiếu linh hoạt với câu ngoài rule. So sánh McNemar dạng exact-match cho thấy Hybrid tốt hơn rõ rệt so với retrieval-only, còn khoảng cách với direct baseline nhỏ hơn trên tập test nội bộ vì nhiều câu là factual core đã được curate.
 
-Các câu hỏi chat thử sau khi sửa hệ thống:
-
-\begin{center}
-\small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{5.1cm} X}
-\toprule
-\textbf{Câu hỏi} & \textbf{Câu trả lời} \\
-\midrule
-Ai là hiệu trưởng Trường Đại học Công nghệ? & GS.TS. Chử Đức Trình \\
-Trường Đại học Công nghệ có tên tiếng Anh là gì? & VNU University of Engineering and Technology \\
-Trường Đại học Công nghệ có những ngành nào? & Danh sách 20 ngành/chương trình bậc đại học của UET \\
-Ngành Trí tuệ nhân tạo tuyển bao nhiêu thí sinh? & Không có thông tin trong corpus. \\
-\bottomrule
-\end{tabularx}
-\end{center}
+Ví dụ khác biệt giữa hai hệ thống: với câu ``Ai đang là hiệu trưởng UET?'', retrieval-only trả nhầm ``Trưởng phòng Tổ chức cán bộ, Phó Hiệu trưởng'', còn Hybrid trả ``GS.TS. Chử Đức Trình''. Với câu ``Trường Quốc tế - ĐHQGHN yêu cầu điểm HSA tối thiểu bao nhiêu?'', retrieval-only trả ``18'', còn Hybrid trả ``Điểm thi HSA từ 80 trở lên''.
 
 \subsection{Lệnh tái lập}
 
